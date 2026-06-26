@@ -105,9 +105,17 @@ def view_genres():
     print("You selected:", genre)
 
 def about_spotify():
-    print("\nSpotify is a digital music streaming service.")
-    print("It recommends music based on user preferences,")
-    print("including genre, mood and listening habits.")
+    """Explains the connection between Spotify and the Disruptive Innovation Model."""
+    clear_screen()
+    print("\n--- About Spotify & Disruptive Innovation ---")
+    print("Spotify is a leading digital music streaming service. As discussed in")
+    print("Part 1 of our project, Spotify represents Clayton Christensen's")
+    print("Disruptive Innovation Model. It disrupted the traditional physical")
+    print("record market (CDs/Vinyl) and early digital downloading models (like")
+    print("iTunes) by offering a subscription-based, on-demand streaming service.")
+    print("This program mimics its core algorithm by recommending playlists")
+    print("based on user preferences, genre, mood, and listening habits.")
+    input("\nPress Enter to return to the main menu...")
 
 def main():
     while True:
