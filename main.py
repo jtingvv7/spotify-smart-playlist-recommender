@@ -7,18 +7,38 @@ def show_menu():
     print("3. About Spotify")
     print("4. Exit")
 
+def recommend_playlist():
+    print("\nPlaylist Recommendation")
+
+def view_genres():
+    print("\nAvailable Genres")
+
+    print("1. Pop")
+    print("2. Rock")
+    print("3. Hip-Hop")
+    print("4. Jazz")
+    print("5. Classical")
+
+    genre = input("\nEnter your choice:")
+    print("You selected:", genre)
+
+def about_spotify():
+    print("\nSpotify is a digital music streaming service.")
+    print("It recommends music based on user preferences,")
+    print("including genre, mood and listening habits.")
+
 def main():
     show_menu()
     choice = input("Enter your choice:")
 
     if choice == "1":
-        print("Playlist Recommendation")
+        recommend_playlist()
         
     elif choice == "2":
-        print("Available Genres")
+        view_genres()
 
     elif choice == "3":
-        print("About Spotify")
+        about_spotify()
 
     elif choice == "4":
         print("Thank you for using Spotify Smart Playlist Recommender!")
