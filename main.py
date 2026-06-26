@@ -1,4 +1,12 @@
+import os
+import subprocess
+
+def clear_screen():
+    # 'nt' is for windows, 'clear' is for Linux/macOS
+    subprocess.run('cls' if os.name == 'nt' else 'clear',shell=True)
+
 def show_menu():
+    clear_screen()
     print("\n")
     print("Spotify Smart Playlist Recommender")
     print("\n")
@@ -116,7 +124,9 @@ def main():
             about_spotify()
 
         elif choice == "4":
+            clear_screen()
             print("Thank you for using Spotify Smart Playlist Recommender!")
+            break
 
         else:
             print("Invalid choice.")
