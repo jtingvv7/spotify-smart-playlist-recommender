@@ -17,6 +17,14 @@ def show_menu():
     print("4. Exit")
     print("="*41)
 
+def get_valid_choice(prompt, valid_choices):
+    while True:
+        choice = input(prompt)
+
+        if choice in valid_choices:
+            return choice
+        print("Invalid input. Please try again.\n")
+
 def recommend_playlist():
     """Handles the logic for playlist recommendation based on user inputs."""
     clear_screen()
@@ -30,36 +38,29 @@ def recommend_playlist():
     mood_map = {"1": "Happy", "2": "Relaxed", "3": "Energetic", "4": "Sad"}
     duration_map = {"1": "Short", "2": "Medium", "3": "Long"}
 
-    # Input loop for Genre
-    while True:
-        print("Choose Genre:")
-        print("1. Pop   2. Rock   3. Hip-Hop   4. Jazz   5. Classical")
-        genre = input("Enter genre (1-5): ")
-        if genre in valid_genres:
-            break
-        print("[Error] Invalid genre. Please try again.\n")
+    
+    print("Choose Genre:")
+    print("1. Pop   2. Rock   3. Hip-Hop   4. Jazz   5. Classical")
+    genre = get_valid_choice(
+        "Enter genre (1-5):",
+        valid_genres)
 
     print("-" * 30)
     
-    # Input loop for Mood
-    while True:
-        print("Choose Mood:")
-        print("1. Happy   2. Relaxed   3. Energetic   4. Sad")
-        mood = input("Enter mood (1-4): ")
-        if mood in valid_moods:
-            break
-        print("[Error] Invalid mood. Please try again.\n")
+    print("Choose Mood:")
+    print("1. Happy   2. Relaxed   3. Energetic   4. Sad")
+    mood = get_valid_choice(
+        "Enter mood (1-4): ",
+        valid_moods)
 
     print("-" * 30)
 
-    # Input loop for Duration
-    while True:
-        print("Listening Duration:")
-        print("1. Short (15 mins)   2. Medium (30-60 mins)   3. Long (2+ hours)")
-        duration = input("Enter duration (1-3): ")
-        if duration in valid_durations:
-            break
-        print("[Error] Invalid duration. Please try again.\n")
+    print("Listening Duration:")
+    print("1. Short (15 mins)   2. Medium (30-60 mins)   3. Long (2+ hours)")
+    duration = get_valid_choice(
+        "Enter duration (1-3): ",
+        valid_durations)
+
 
     recommendations = {
         ("1", "1"): {"playlist": "Today's Top Hits", "artist": "Taylor Swift", "song": "Cruel Summer"},
