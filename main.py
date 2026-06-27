@@ -374,7 +374,9 @@ def recommend_playlist():
         history.append({
             "genre":genre_map[genre],
             "mood":mood_map[mood],
-            "playlist":selection["playlist"]
+            "playlist":selection["playlist"],
+            "artist":artist,
+            "song":song
         })
         print("\n=========================================")
         print(" Spotify Recommendation")
@@ -431,11 +433,16 @@ def view_history():
     if not history:
         print("No recommendation history available.")
     else:
-        for i, item in enumerate(history,start=1):
-            print(f"{i}. Genre    : {item['genre']}")
-            print(f"   Mood     : {item['mood']}")
-            print(f"   Playlist : {item['playlist']}")
-            print("-"*40)
+        for i, item in enumerate(history, start=1):
+            print(f"Recommendation {i}")
+            print("-" * 40)
+            print(f"Genre     : {item['genre']}")
+            print(f"Mood      : {item['mood']}")
+            print(f"Duration  : {item['duration']}")
+            print(f"Playlist  : {item['playlist']}")
+            print(f"Artist    : {item['artist']}")
+            print(f"Song      : {item['song']}")
+            print("-" * 40)
 
     input("\nPress Enter to return...")
 
