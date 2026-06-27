@@ -1,6 +1,8 @@
 import os
 import subprocess
 
+history = []
+
 def clear_screen():
     # 'nt' is for windows, 'clear' is for Linux/macOS
     subprocess.run('cls' if os.name == 'nt' else 'clear',shell=True)
@@ -13,8 +15,9 @@ def show_menu():
     print("="*41)
     print("1. Get Playlist Recommendation")
     print("2. View Available Genres")
-    print("3. About Spotify & Its Innovation")
-    print("4. Exit")
+    print("3. View Recommendation History")
+    print("4. About Spotify & Its Innovation")
+    print("5. Exit")
     print("="*41)
 
 def get_valid_choice(prompt, valid_choices):
@@ -102,6 +105,11 @@ def recommend_playlist():
 
     if selection:
         clear_screen()
+        history.append({
+            "genre":genre_map[genre],
+            "mood":mood_map[mood],
+            "playlist":selection["playlist"]
+        })
         print("\n=========================================")
         print(" Spotify Recommendation")
         print("=========================================")
@@ -142,6 +150,20 @@ def view_genres():
     print("5. Classical - Orchestral and traditional compositions.")
     input("\nPress Enter to return to the main menu...")
 
+def view_history():
+    clear_screen()
+    print("\n--- Recommendation History ---")
+    if not history:
+        print("No recommendation history available.")
+    else:
+        for i, item in enumerate(history,start=1):
+            print(f"{i}. Genre    : {item['genre']}")
+            print(f"   Mood     : {item['mood']}")
+            print(f"   Playlist : {item['playlist']}")
+            print("-"*40)
+
+    input("\nPress Enter to return...")
+
 def about_spotify():
     """Explains the connection between Spotify and the Disruptive Innovation Model."""
     clear_screen()
@@ -164,12 +186,15 @@ def main():
             recommend_playlist()
         
         elif choice == "2":
-                view_genres()
+            view_genres()
 
         elif choice == "3":
-            about_spotify()
+            view_history()
 
         elif choice == "4":
+            about_spotify()
+
+        elif choice == "5":
             clear_screen()
             print("Thank you for using Spotify Smart Playlist Recommender!")
             break
