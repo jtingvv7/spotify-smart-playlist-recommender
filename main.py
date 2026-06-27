@@ -1,5 +1,6 @@
 import os
 import subprocess
+import random
 
 history = []
 
@@ -67,33 +68,297 @@ def recommend_playlist():
 
 
     recommendations = {
-        ("1", "1"): {"playlist": "Today's Top Hits", "artist": "Taylor Swift", "song": "Cruel Summer"},
-        ("1", "2"): {"playlist": "Chill Hits", "artist": "Ed Sheeran", "song": "Perfect"},
-        ("1", "3"): {"playlist": "Pop Rising", "artist": "Dua Lipa", "song": "Levitating"},
-        ("1", "4"): {"playlist": "Sad Pop Mix", "artist": "Billie Eilish", "song": "What Was I Made For?"},
 
-        ("2", "1"): {"playlist": "Rock Classics", "artist": "Queen", "song": "Don't Stop Me Now"},
-        ("2", "2"): {"playlist": "Soft Rock Drive", "artist": "Coldplay", "song": "Yellow"},
-        ("2", "3"): {"playlist": "Rock Workout", "artist": "AC/DC", "song": "Thunderstruck"},
-        ("2", "4"): {"playlist": "Acoustic Rock", "artist": "Nirvana", "song": "Something In The Way"},
+    # ================= Pop =================
+    ("1", "1"): {
+        "playlist": "Today's Top Hits",
+        "artists": [
+            "Taylor Swift",
+            "Olivia Rodrigo",
+            "Sabrina Carpenter"
+        ],
+        "songs": [
+            "Cruel Summer",
+            "vampire",
+            "Espresso"
+        ]
+    },
 
-        ("3", "1"): {"playlist": "RapCaviar", "artist": "Drake", "song": "God's Plan"},
-        ("3", "2"): {"playlist": "Mellow Bars", "artist": "J. Cole", "song": "No Role Modelz"},
-        ("3", "3"): {"playlist": "Beast Mode", "artist": "Eminem", "song": "Till I Collapse"},
-        ("3", "4"): {"playlist": "Late Night Hip-Hop", "artist": "Kendrick Lamar", "song": "PRIDE."},
+    ("1", "2"): {
+        "playlist": "Chill Hits",
+        "artists": [
+            "Billie Eilish",
+            "Lauv",
+            "Conan Gray"
+        ],
+        "songs": [
+            "Ocean Eyes",
+            "I Like Me Better",
+            "Heather"
+        ]
+    },
 
-        ("4", "1"): {"playlist": "Jazz Vibes", "artist": "Louis Armstrong", "song": "What A Wonderful World"},
-        ("4", "2"): {"playlist": "Smooth Jazz", "artist": "Kenny G", "song": "Songbird"},
-        ("4", "3"): {"playlist": "Jazz Fusion", "artist": "Miles Davis", "song": "So What"},
-        ("4", "4"): {"playlist": "Blue Note Sessions", "artist": "John Coltrane", "song": "In A Sentimental Mood"},
+    ("1", "3"): {
+        "playlist": "Pop Rising",
+        "artists": [
+            "Dua Lipa",
+            "Ariana Grande",
+            "Doja Cat"
+        ],
+        "songs": [
+            "Levitating",
+            "yes, and?",
+            "Paint The Town Red"
+        ]
+    },
 
-        ("5", "1"): {"playlist": "Mozart for Joy", "artist": "Wolfgang Amadeus Mozart", "song": "Eine kleine Nachtmusik"},
-        ("5", "2"): {"playlist": "Peaceful Piano", "artist": "Ludovico Einaudi", "song": "Nuvole Bianche"},
-        ("5", "3"): {"playlist": "Classical Focus", "artist": "Johann Sebastian Bach", "song": "Cello Suite No. 1"},
-        ("5", "4"): {"playlist": "Classical Essentials", "artist": "Frederic Chopin", "song": "Nocturne Op. 9 No. 2"}
+    ("1", "4"): {
+        "playlist": "Sad Pop Mix",
+        "artists": [
+            "Billie Eilish",
+            "Lewis Capaldi",
+            "Adele"
+        ],
+        "songs": [
+            "What Was I Made For?",
+            "Someone You Loved",
+            "Easy On Me"
+        ]
+    },
+
+    # ================= Rock =================
+    ("2", "1"): {
+        "playlist": "Rock Classics",
+        "artists": [
+            "Queen",
+            "Bon Jovi",
+            "Journey"
+        ],
+        "songs": [
+            "Don't Stop Me Now",
+            "Livin' On A Prayer",
+            "Don't Stop Believin'"
+        ]
+    },
+
+    ("2", "2"): {
+        "playlist": "Soft Rock Drive",
+        "artists": [
+            "Coldplay",
+            "The Script",
+            "Imagine Dragons"
+        ],
+        "songs": [
+            "Yellow",
+            "Breakeven",
+            "Demons"
+        ]
+    },
+
+    ("2", "3"): {
+        "playlist": "Rock Workout",
+        "artists": [
+            "AC/DC",
+            "Linkin Park",
+            "Metallica"
+        ],
+        "songs": [
+            "Thunderstruck",
+            "Numb",
+            "Enter Sandman"
+        ]
+    },
+
+    ("2", "4"): {
+        "playlist": "Acoustic Rock",
+        "artists": [
+            "Nirvana",
+            "Foo Fighters",
+            "Pearl Jam"
+        ],
+        "songs": [
+            "Something In The Way",
+            "Everlong",
+            "Black"
+        ]
+    },
+
+    # ================= Hip-Hop =================
+    ("3", "1"): {
+        "playlist": "RapCaviar",
+        "artists": [
+            "Drake",
+            "Travis Scott",
+            "Lil Baby"
+        ],
+        "songs": [
+            "God's Plan",
+            "SICKO MODE",
+            "Drip Too Hard"
+        ]
+    },
+
+    ("3", "2"): {
+        "playlist": "Mellow Bars",
+        "artists": [
+            "J. Cole",
+            "Kendrick Lamar",
+            "Logic"
+        ],
+        "songs": [
+            "No Role Modelz",
+            "LOVE.",
+            "1-800-273-8255"
+        ]
+    },
+
+    ("3", "3"): {
+        "playlist": "Beast Mode",
+        "artists": [
+            "Eminem",
+            "50 Cent",
+            "DMX"
+        ],
+        "songs": [
+            "Till I Collapse",
+            "In Da Club",
+            "X Gon' Give It To Ya"
+        ]
+    },
+
+    ("3", "4"): {
+        "playlist": "Late Night Hip-Hop",
+        "artists": [
+            "Kendrick Lamar",
+            "Post Malone",
+            "The Weeknd"
+        ],
+        "songs": [
+            "PRIDE.",
+            "Circles",
+            "Call Out My Name"
+        ]
+    },
+
+    # ================= Jazz =================
+    ("4", "1"): {
+        "playlist": "Jazz Vibes",
+        "artists": [
+            "Louis Armstrong",
+            "Ella Fitzgerald",
+            "Frank Sinatra"
+        ],
+        "songs": [
+            "What A Wonderful World",
+            "Dream A Little Dream Of Me",
+            "Fly Me To The Moon"
+        ]
+    },
+
+    ("4", "2"): {
+        "playlist": "Smooth Jazz",
+        "artists": [
+            "Kenny G",
+            "Dave Koz",
+            "George Benson"
+        ],
+        "songs": [
+            "Songbird",
+            "You Make Me Smile",
+            "Breezin'"
+        ]
+    },
+
+    ("4", "3"): {
+        "playlist": "Jazz Fusion",
+        "artists": [
+            "Miles Davis",
+            "Herbie Hancock",
+            "Chick Corea"
+        ],
+        "songs": [
+            "So What",
+            "Chameleon",
+            "Spain"
+        ]
+    },
+
+    ("4", "4"): {
+        "playlist": "Blue Note Sessions",
+        "artists": [
+            "John Coltrane",
+            "Chet Baker",
+            "Bill Evans"
+        ],
+        "songs": [
+            "In A Sentimental Mood",
+            "My Funny Valentine",
+            "Peace Piece"
+        ]
+    },
+
+    # ================= Classical =================
+    ("5", "1"): {
+        "playlist": "Mozart for Joy",
+        "artists": [
+            "Mozart",
+            "Beethoven",
+            "Haydn"
+        ],
+        "songs": [
+            "Eine kleine Nachtmusik",
+            "Symphony No. 5",
+            "The Creation"
+        ]
+    },
+
+    ("5", "2"): {
+        "playlist": "Peaceful Piano",
+        "artists": [
+            "Ludovico Einaudi",
+            "Yiruma",
+            "Max Richter"
+        ],
+        "songs": [
+            "Nuvole Bianche",
+            "River Flows In You",
+            "On The Nature Of Daylight"
+        ]
+    },
+
+    ("5", "3"): {
+        "playlist": "Classical Focus",
+        "artists": [
+            "Johann Sebastian Bach",
+            "Antonio Vivaldi",
+            "Philip Glass"
+        ],
+        "songs": [
+            "Cello Suite No.1",
+            "Spring",
+            "Opening"
+        ]
+    },
+
+    ("5", "4"): {
+        "playlist": "Classical Essentials",
+        "artists": [
+            "Frédéric Chopin",
+            "Claude Debussy",
+            "Pyotr Ilyich Tchaikovsky"
+        ],
+        "songs": [
+            "Nocturne Op.9 No.2",
+            "Clair de Lune",
+            "Swan Lake"
+        ]
     }
 
+}
+
     selection = recommendations.get((genre, mood))
+    artist = random.choice(selection["artists"])
+    song = random.choice(selection["songs"])
 
     if duration == "1":
         reason = "Perfect for uplifting your mood during a\nshort 15-minute listening session."
@@ -125,10 +390,10 @@ def recommend_playlist():
         print(selection["playlist"])
         print("")
         print("Recommended Artist")
-        print(selection["artist"])
+        print(artist)
         print("")
         print("Recommended Song")
-        print(selection["song"])
+        print(song)
         print("")
         print("Reason")
         print(reason)
