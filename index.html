@@ -478,7 +478,6 @@ main{flex:1;padding:32px;overflow-y:auto;}
     <div class="step-pill current" id="pill-0">Genre</div>
     <div class="step-pill"         id="pill-1">Mood</div>
     <div class="step-pill"         id="pill-2">Duration</div>
-    <div class="step-pill"         id="pill-3">Playlist Size</div>
   </div>
 
   <!-- Step 0: Genre -->
@@ -528,23 +527,7 @@ main{flex:1;padding:32px;overflow-y:auto;}
     </div>
   </div>
 
-  <!-- Step 3: Playlist Size -->
-  <div id="step-3" class="q-card hidden">
-    <h3>How many songs in your playlist?</h3>
-    <p>Drag to customise your playlist size (5–50 songs).</p>
-    <div style="margin-bottom:20px;">
-      <div class="range-row">
-        <input type="range" min="5" max="50" value="15" id="plRange"
-          oninput="document.getElementById('plVal').textContent=this.value"/>
-        <div class="range-val" id="plVal">15</div>
-      </div>
-      <div class="range-labels"><span>5 songs</span><span>50 songs</span></div>
-    </div>
-    <div class="nav-btns">
-      <button class="btn btn-outline" onclick="goBack(2)">← Back</button>
-      <button class="btn btn-green"   onclick="generate()">✦ Find My Playlist</button>
-    </div>
-  </div>
+  
 </div>
 
 <!-- ═══ RESULT ═══ -->
