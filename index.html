@@ -473,7 +473,7 @@ main{flex:1;padding:32px;overflow-y:auto;}
 <!-- ═══ RECOMMEND ═══ -->
 <div class="screen" id="screen-recommend">
   <h1 class="page-title">Playlist Recommendation</h1>
-  <p class="page-sub">Answer 4 questions to get your perfect playlist.</p>
+  <p class="page-sub">Answer 3 questions to get your perfect playlist.</p>
   <div class="step-bar">
     <div class="step-pill current" id="pill-0">Genre</div>
     <div class="step-pill"         id="pill-1">Mood</div>
@@ -523,17 +523,11 @@ main{flex:1;padding:32px;overflow-y:auto;}
     </div>
     <div class="nav-btns">
       <button class="btn btn-outline" onclick="goBack(1)">← Back</button>
-      <button class="btn btn-green"   onclick="goNext(3)">Next →</button>
+      <button class="btn btn-green" onclick="generate()">✦ Find My Playlist</button>
     </div>
   </div>
 
-
-  <div id="step-3" class="q-card hidden">
-    <div class="nav-btns">
-      <button class="btn btn-outline" onclick="goBack(2)">← Back</button>
-      <button class="btn btn-green"   onclick="generate()">✦ Find My Playlist</button>
-    </div>
-  </div>
+  
 </div>
 
 <!-- ═══ RESULT ═══ -->
@@ -788,7 +782,6 @@ function pick(key, val, btn) {
 // ── GENERATE ───────────────────────────────────────────
 function generate() {
   if (!answers.genre||!answers.mood||!answers.duration) { toast('Please complete all steps'); return; }
-  const plSize = parseInt(document.getElementById('plRange').value);
   const data   = DB[answers.genre]?.[answers.mood];
   if (!data) { toast('No match found, try again'); return; }
 
@@ -798,7 +791,7 @@ function generate() {
 
   currentResult = {
     genre: answers.genre, mood: answers.mood,
-    duration: answers.duration, plSize,
+    duration: answers.duration,
     playlist: data.playlist, artist, song,
     songs: data.songs, artists: data.artists,
     fact: data.fact,
@@ -808,7 +801,7 @@ function generate() {
 
   // Render
   document.getElementById('r-artist').textContent  = artist;
-  document.getElementById('r-meta').textContent    = answers.genre + ' · ' + answers.mood + ' · ' + answers.duration + ' · ' + plSize + ' songs';
+  document.getElementById('r-meta').textContent    = `${answers.genre} · ${answers.mood} · ${answers.duration}`;
   document.getElementById('r-pl-name').textContent = data.playlist;
   document.getElementById('r-sub').textContent     = `For ${currentUser?.name||'you'} · ${answers.genre} · ${answers.mood}`;
   document.getElementById('r-fact').innerHTML      = `<strong>Fun Fact:</strong> ${data.fact}`;
@@ -870,7 +863,6 @@ function renderHistory() {
         <span class="tag g">${h.genre}</span>
         <span class="tag">${h.mood}</span>
         <span class="tag">${h.duration}</span>
-        <span class="tag">${h.plSize} songs</span>
       </div>
       <div class="h-songs">${h.playlist} · ${h.songs.join(' · ')}</div>
       <div class="h-card-actions">
@@ -889,7 +881,7 @@ function restoreResult(i) {
   const data = DB[h.genre]?.[h.mood];
   if (!data) return;
   document.getElementById('r-artist').textContent  = h.artist;
-  document.getElementById('r-meta').textContent    = h.genre + ' · ' + h.mood + ' · ' + h.duration + ' · ' + h.plSize + ' songs';
+  document.getElementById('r-meta').textContent    = `${h.genre} · ${h.mood} · ${h.duration}`;
   document.getElementById('r-pl-name').textContent = h.playlist;
   document.getElementById('r-sub').textContent     = `Viewed from history · ${h.date}`;
   document.getElementById('r-fact').innerHTML      = `<strong>Fun Fact:</strong> ${data.fact}`;
