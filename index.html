@@ -744,15 +744,13 @@ function nav(id) {
 // ── STEPS ──────────────────────────────────────────────
 function resetSteps() {
   answers = { genre:null, mood:null, duration:null };
-  [0,1,2,3].forEach(i => {
+  [0,1,2].forEach(i => {
     document.getElementById('step-'+i).classList.add('hidden');
     document.getElementById('pill-'+i).className = 'step-pill';
   });
   document.getElementById('step-0').classList.remove('hidden');
   document.getElementById('pill-0').className = 'step-pill current';
   document.querySelectorAll('.choice-btn').forEach(b=>b.classList.remove('selected'));
-  document.getElementById('plRange').value = 15;
-  document.getElementById('plVal').textContent = 15;
 }
 
 function goNext(to) {
@@ -821,7 +819,6 @@ function generate() {
       </div>`;
   });
 
-  document.getElementById('pill-3').className = 'step-pill done';
   nav('result'); updateCounts();
 }
 
