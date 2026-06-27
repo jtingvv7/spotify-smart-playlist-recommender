@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Spotify Smart Playlist Recommender</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg:        #121212;
+  --surface:   #1a1a1a;
+  --card:      #242424;
+  --card2:     #2e2e2e;
+  --green:     #1DB954;
+  --green-dim: #158a3e;
+  --green-bg:  #1a2e1a;
+  --white:     #FFFFFF;
+  --grey:      #b3b3b3;
+  --dark-grey: #535353;
+  --red:       #e05260;
+  --yellow:    #f5a623;
+  --radius:    12px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+
+body{
+  background:var(--bg);color:var(--white);
+  font-family:'Inter',sans-serif;min-height:100vh;
+  display:flex;flex-direction:column;
+}
+
+/* NAV */
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 32px;background:#000;
+  border-bottom:1px solid #2a2a2a;
+  position:sticky;top:0;z-index:100;
+}
+.nav-logo{
+  display:flex;align-items:center;gap:10px;
+  font-family:'Space Mono',monospace;font-size:1.05rem;
+  font-weight:700;color:var(--green);letter-spacing:1px;
+}
+.nav-logo span{font-size:1.4rem;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-user{display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--grey);}
+.nav-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--green);display:flex;align-items:center;
+  justify-content:center;font-weight:700;font-size:0.8rem;color:#000;
+}
+
+/* BUTTONS */
+.btn{
+  padding:9px 22px;border-radius:20px;border:none;
+  cursor:pointer;font-family:'Inter',sans-serif;
+  font-size:0.85rem;font-weight:600;transition:all 0.2s;
+}
+.btn-green{background:var(--green);color:#000;}
+.btn-green:hover{background:#1ed760;transform:scale(1.03);}
+.btn-outline{background:transparent;color:var(--white);border:1px solid var(--dark-grey);}
+.btn-outline:hover{border-color:var(--white);}
+.btn-ghost{background:transparent;color:var(--grey);border:none;font-size:0.82rem;padding:8px 12px;}
+.btn-ghost:hover{color:var(--white);}
+.btn-sm{padding:6px 14px;font-size:0.78rem;}
+
+/* LAYOUT */
+.app{display:flex;flex:1;}
+
+/* SIDEBAR */
+aside{
+  width:220px;min-height:calc(100vh - 57px);
+  background:#000;padding:20px 12px;
+  display:flex;flex-direction:column;gap:4px;
+  border-right:1px solid #1a1a1a;flex-shrink:0;
+}
+.sidebar-label{
+  font-size:0.68rem;font-weight:700;color:var(--dark-grey);
+  letter-spacing:1.5px;text-transform:uppercase;
+  padding:10px 12px 4px;
+}
+.sidebar-btn{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 12px;border-radius:8px;
+  background:none;border:none;cursor:pointer;
+  color:var(--grey);font-family:'Inter',sans-serif;
+  font-size:0.88rem;font-weight:500;
+  transition:all 0.15s;width:100%;text-align:left;
+}
+.sidebar-btn:hover{color:var(--white);background:#1a1a1a;}
+.sidebar-btn.active{color:var(--white);background:#242424;}
+.sidebar-btn .icon{font-size:1rem;width:20px;text-align:center;}
+.sidebar-divider{height:1px;background:#1a1a1a;margin:6px 0;}
+
+/* MAIN */
+main{flex:1;padding:32px;overflow-y:auto;}
+
+/* SCREENS */
+.screen{display:none;}
+.screen.active{display:block;}
+
+/* AUTH */
+.auth-wrap{
+  max-width:420px;margin:50px auto;
+  background:var(--surface);border-radius:16px;
+  padding:40px;border:1px solid #2a2a2a;text-align:center;
+}
+.auth-logo{font-size:2.5rem;margin-bottom:6px;}
+.auth-wrap h2{
+  font-family:'Space Mono',monospace;
+  color:var(--green);font-size:1.2rem;margin-bottom:4px;
+}
+.auth-wrap p{color:var(--grey);font-size:0.84rem;margin-bottom:24px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-group{text-align:left;margin-bottom:14px;}
+.form-group label{
+  display:block;font-size:0.76rem;font-weight:600;
+  color:var(--grey);margin-bottom:5px;letter-spacing:0.5px;
+}
+.form-group input,.form-group select{
+  width:100%;padding:11px 13px;
+  background:var(--card);border:1px solid #333;
+  border-radius:8px;color:var(--white);
+  font-family:'Inter',sans-serif;font-size:0.88rem;
+  transition:border-color 0.2s;
+}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--green);}
+.form-group select option{background:var(--card);}
+.auth-wrap .btn{width:100%;padding:13px;margin-top:6px;font-size:0.92rem;}
+.auth-toggle{margin-top:14px;font-size:0.81rem;color:var(--grey);}
+.auth-toggle a{color:var(--green);cursor:pointer;}
+.auth-toggle a:hover{text-decoration:underline;}
+
+/* PAGE HEADER */
+.page-title{font-size:1.5rem;font-weight:700;margin-bottom:4px;}
+.page-sub{color:var(--grey);font-size:0.88rem;margin-bottom:26px;}
+
+/* STEP BAR */
+.step-bar{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.step-pill{
+  padding:5px 14px;border-radius:20px;font-size:0.75rem;
+  font-weight:600;background:var(--card);color:var(--dark-grey);
+  transition:all 0.2s;
+}
+.step-pill.done{background:var(--green-dim);color:var(--white);}
+.step-pill.current{background:var(--green);color:#000;}
+
+/* QUESTION CARD */
+.q-card{
+  background:var(--surface);border-radius:var(--radius);
+  padding:26px;border:1px solid #2a2a2a;
+  margin-bottom:20px;max-width:580px;
+}
+.q-card h3{font-size:1.05rem;font-weight:600;margin-bottom:4px;}
+.q-card p{color:var(--grey);font-size:0.82rem;margin-bottom:18px;}
+
+/* CHOICE GRID */
+.choice-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;
+}
+.choice-btn{
+  padding:14px 10px;border-radius:10px;
+  background:var(--card);border:2px solid transparent;
+  color:var(--white);cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:0.84rem;font-weight:500;
+  text-align:center;transition:all 0.18s;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.choice-btn .emoji{font-size:1.3rem;}
+.choice-btn:hover{border-color:var(--green);background:var(--green-bg);}
+.choice-btn.selected{border-color:var(--green);background:var(--green-bg);color:var(--green);}
+
+/* RANGE */
+.range-row{display:flex;align-items:center;gap:14px;margin-bottom:6px;}
+.range-row input[type=range]{flex:1;accent-color:var(--green);cursor:pointer;height:4px;}
+.range-val{
+  background:var(--green);color:#000;font-weight:700;
+  font-size:0.88rem;padding:4px 12px;border-radius:20px;
+  min-width:44px;text-align:center;
+}
+.range-labels{
+  display:flex;justify-content:space-between;
+  font-size:0.7rem;color:var(--dark-grey);margin-top:4px;
+}
+
+.nav-btns{display:flex;gap:10px;margin-top:18px;}
+
+/* RESULTS */
+.result-hero{
+  background:linear-gradient(135deg,var(--green-bg) 0%,var(--surface) 60%);
+  border-radius:var(--radius);padding:26px;
+  border:1px solid var(--green-dim);
+  margin-bottom:20px;max-width:640px;
+}
+.result-badge{
+  font-size:0.68rem;font-weight:700;letter-spacing:2px;
+  color:var(--green);text-transform:uppercase;margin-bottom:8px;
+}
+.result-artist{font-size:1.7rem;font-weight:700;margin-bottom:2px;}
+.result-meta{color:var(--grey);font-size:0.85rem;margin-bottom:18px;}
+.result-playlist{
+  background:var(--card);border-radius:8px;
+  padding:10px 16px;margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;
+  font-size:0.88rem;
+}
+.result-playlist .pl-label{color:var(--grey);font-size:0.75rem;margin-bottom:2px;}
+.result-playlist .pl-name{font-weight:600;}
+.song-row{
+  display:flex;align-items:center;gap:14px;
+  background:var(--card);border-radius:8px;
+  padding:11px 14px;margin-bottom:8px;transition:background 0.15s;
+}
+.song-row:hover{background:var(--card2);}
+.song-num{color:var(--dark-grey);font-size:0.78rem;width:16px;text-align:center;}
+.song-title{font-size:0.88rem;font-weight:500;}
+.song-artist{font-size:0.74rem;color:var(--grey);margin-top:1px;}
+.song-icon{color:var(--green);font-size:0.9rem;margin-left:auto;}
+
+.fun-fact{
+  background:var(--card);border-left:3px solid var(--green);
+  border-radius:0 8px 8px 0;padding:12px 14px;
+  font-size:0.82rem;color:var(--grey);margin-top:14px;
+}
+.fun-fact strong{color:var(--green);}
+.duration-note{
+  background:var(--card);border-left:3px solid var(--yellow);
+  border-radius:0 8px 8px 0;padding:10px 14px;
+  font-size:0.82rem;color:var(--grey);margin-top:10px;
+}
+.duration-note strong{color:var(--yellow);}
+
+.result-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+
+/* HOME CARDS */
+.home-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:14px;max-width:680px;margin-top:4px;
+}
+.home-card{
+  background:var(--surface);border-radius:var(--radius);
+  padding:20px;border:1px solid #2a2a2a;
+  cursor:pointer;transition:all 0.18s;
+}
+.home-card:hover{border-color:var(--dark-grey);background:var(--card);}
+.home-card .hc-icon{font-size:2rem;margin-bottom:10px;}
+.home-card .hc-title{font-weight:700;font-size:0.95rem;margin-bottom:4px;}
+.home-card .hc-sub{font-size:0.78rem;color:var(--grey);}
+
+/* HISTORY / SAVED GRID */
+.cards-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));
+  gap:14px;margin-top:8px;
+}
+.h-card{
+  background:var(--surface);border-radius:var(--radius);
+  padding:18px;border:1px solid #2a2a2a;transition:border-color 0.2s;
+}
+.h-card:hover{border-color:var(--dark-grey);}
+.h-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.h-artist{font-weight:700;font-size:0.98rem;}
+.h-date{font-size:0.7rem;color:var(--dark-grey);}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.tag{
+  padding:3px 9px;border-radius:20px;
+  font-size:0.7rem;font-weight:600;
+  background:var(--card);color:var(--grey);
+}
+.tag.g{background:var(--green-bg);color:var(--green);}
+.h-songs{font-size:0.78rem;color:var(--grey);line-height:1.7;}
+.h-card-actions{display:flex;gap:8px;margin-top:12px;}
+.icon-btn{
+  background:var(--card);border:none;color:var(--grey);
+  padding:5px 10px;border-radius:6px;cursor:pointer;
+  font-size:0.78rem;transition:all 0.15s;font-family:'Inter',sans-serif;
+}
+.icon-btn:hover{background:var(--card2);color:var(--white);}
+.icon-btn.red:hover{color:var(--red);}
+
+/* PLAYLIST */
+.pl-card{
+  background:var(--surface);border-radius:var(--radius);
+  padding:20px;border:1px solid #2a2a2a;max-width:580px;
+}
+.pl-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.pl-title{font-weight:700;}
+.pl-count{font-size:0.76rem;color:var(--grey);}
+.pl-item{
+  display:flex;align-items:center;gap:12px;
+  padding:9px 0;border-bottom:1px solid #2a2a2a;font-size:0.84rem;
+}
+.pl-item:last-child{border-bottom:none;}
+.pl-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;}
+
+/* ABOUT */
+.about-card{
+  background:var(--surface);border-radius:var(--radius);
+  padding:26px;border:1px solid #2a2a2a;max-width:620px;
+  margin-bottom:16px;
+}
+.about-card h3{font-size:1rem;font-weight:700;color:var(--green);margin-bottom:10px;}
+.about-card p{font-size:0.86rem;color:var(--grey);line-height:1.7;margin-bottom:10px;}
+.bullet-list{list-style:none;padding:0;}
+.bullet-list li{
+  font-size:0.84rem;color:var(--grey);
+  padding:5px 0;padding-left:16px;position:relative;
+}
+.bullet-list li::before{
+  content:'•';color:var(--green);
+  position:absolute;left:0;
+}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:50px 20px;color:var(--dark-grey);}
+.empty-state .big-icon{font-size:2.8rem;margin-bottom:10px;}
+.empty-state p{font-size:0.88rem;}
+
+/* TOAST */
+#toast{
+  position:fixed;bottom:26px;left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--green);color:#000;font-weight:600;
+  padding:11px 22px;border-radius:24px;font-size:0.86rem;
+  transition:transform 0.3s;z-index:999;pointer-events:none;
+}
+#toast.show{transform:translateX(-50%) translateY(0);}
+
+/* UTILS */
+.hidden{display:none!important;}
+.text-green{color:var(--green);}
+.divider{height:1px;background:#2a2a2a;margin:16px 0;}
+
+@media(max-width:640px){
+  aside{display:none;}
+  main{padding:20px 16px;}
+  nav{padding:12px 16px;}
+  .form-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>♫</span> SPOTIFY CLI</div>
+  <div class="nav-right">
+    <div class="nav-user hidden" id="navUser">
+      <div class="nav-avatar" id="navAvatar">?</div>
+      <span id="navName">Guest</span>
+    </div>
+    <button class="btn btn-outline hidden" id="btnLogout" onclick="logout()">Log out</button>
+    <button class="btn btn-green hidden" id="btnSigninNav" onclick="showScreen('signin')">Sign in</button>
+  </div>
+</nav>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside id="sidebar" class="hidden">
+  <div class="sidebar-label">Menu</div>
+  <button class="sidebar-btn active" id="sb-home"      onclick="nav('home')"><span class="icon">🏠</span> Home</button>
+  <button class="sidebar-btn"        id="sb-recommend" onclick="nav('recommend')"><span class="icon">🎵</span> Recommend</button>
+  <button class="sidebar-btn"        id="sb-about"     onclick="nav('about')"><span class="icon">ℹ️</span> About</button>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-label">Library</div>
+  <button class="sidebar-btn" id="sb-saved"    onclick="nav('saved')"><span class="icon">❤️</span> Saved</button>
+  <button class="sidebar-btn" id="sb-history"  onclick="nav('history')"><span class="icon">🕐</span> History</button>
+  <button class="sidebar-btn" id="sb-playlist" onclick="nav('playlist')"><span class="icon">📋</span> Playlist</button>
+</aside>
+
+<main>
+
+<!-- ═══ SIGN IN ═══ -->
+<div class="screen active" id="screen-signin">
+  <div class="auth-wrap">
+    <div class="auth-logo">♫</div>
+    <h2>SPOTIFY MUSIC CLI</h2>
+    <p>Sign in to get personalised playlist picks.</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" id="si-name" placeholder="e.g. Alex"/>
+      </div>
+      <div class="form-group">
+        <label>Gender</label>
+        <select id="si-gender">
+          <option value="">Select...</option>
+          <option>Male</option><option>Female</option>
+          <option value="Other">Prefer not to say</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="si-email" placeholder="you@email.com"/>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="si-pass" placeholder="••••••••"/>
+    </div>
+    <button class="btn btn-green" onclick="signIn()">Sign In</button>
+    <div class="auth-toggle">No account? <a onclick="showScreen('signup')">Sign up</a></div>
+  </div>
+</div>
+
+<!-- ═══ SIGN UP ═══ -->
+<div class="screen" id="screen-signup">
+  <div class="auth-wrap">
+    <div class="auth-logo">♫</div>
+    <h2>CREATE ACCOUNT</h2>
+    <p>Set up your profile once — we'll remember you.</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" id="su-name" placeholder="e.g. Alex"/>
+      </div>
+      <div class="form-group">
+        <label>Gender</label>
+        <select id="su-gender">
+          <option value="">Select...</option>
+          <option>Male</option><option>Female</option>
+          <option value="Other">Prefer not to say</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="su-email" placeholder="you@email.com"/>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="su-pass" placeholder="At least 6 characters"/>
+    </div>
+    <button class="btn btn-green" onclick="signUp()">Create Account</button>
+    <div class="auth-toggle">Already have an account? <a onclick="showScreen('signin')">Sign in</a></div>
+  </div>
+</div>
+
+<!-- ═══ HOME ═══ -->
+<div class="screen" id="screen-home">
+  <h1 class="page-title">Good <span id="greet-time">evening</span>, <span id="greet-name" class="text-green">there</span> 👋</h1>
+  <p class="page-sub">Ready to discover your next favourite playlist?</p>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px;">
+    <button class="btn btn-green" onclick="nav('recommend')">♫ &nbsp;Get Recommendation</button>
+    <button class="btn btn-outline" onclick="nav('history')">View History</button>
+  </div>
+  <div class="home-grid">
+    <div class="home-card" onclick="nav('recommend')">
+      <div class="hc-icon">🎵</div>
+      <div class="hc-title">New Recommendation</div>
+      <div class="hc-sub">Answer 4 quick questions</div>
+    </div>
+    <div class="home-card" onclick="nav('saved')">
+      <div class="hc-icon">❤️</div>
+      <div class="hc-title">Saved Playlists</div>
+      <div class="hc-sub" id="home-saved-count">0 saved</div>
+    </div>
+    <div class="home-card" onclick="nav('history')">
+      <div class="hc-icon">🕐</div>
+      <div class="hc-title">History</div>
+      <div class="hc-sub" id="home-hist-count">0 sessions</div>
+    </div>
+    <div class="home-card" onclick="nav('playlist')">
+      <div class="hc-icon">📋</div>
+      <div class="hc-title">My Playlist</div>
+      <div class="hc-sub" id="home-pl-count">Build your list</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RECOMMEND ═══ -->
+<div class="screen" id="screen-recommend">
+  <h1 class="page-title">Playlist Recommendation</h1>
+  <p class="page-sub">Answer 4 questions to get your perfect playlist.</p>
+  <div class="step-bar">
+    <div class="step-pill current" id="pill-0">Genre</div>
+    <div class="step-pill"         id="pill-1">Mood</div>
+    <div class="step-pill"         id="pill-2">Duration</div>
+    <div class="step-pill"         id="pill-3">Playlist Size</div>
+  </div>
+
+  <!-- Step 0: Genre -->
+  <div id="step-0" class="q-card">
+    <h3>What genre do you enjoy?</h3>
+    <p>Choose the music style that fits your taste.</p>
+    <div class="choice-grid">
+      <button class="choice-btn" onclick="pick('genre','Pop',this)">        <span class="emoji">🎤</span>Pop</button>
+      <button class="choice-btn" onclick="pick('genre','Rock',this)">       <span class="emoji">🎸</span>Rock</button>
+      <button class="choice-btn" onclick="pick('genre','Hip-Hop',this)">    <span class="emoji">🎧</span>Hip-Hop</button>
+      <button class="choice-btn" onclick="pick('genre','Jazz',this)">       <span class="emoji">🎷</span>Jazz</button>
+      <button class="choice-btn" onclick="pick('genre','Classical',this)">  <span class="emoji">🎻</span>Classical</button>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-green" onclick="goNext(1)">Next →</button>
+    </div>
+  </div>
+
+  <!-- Step 1: Mood -->
+  <div id="step-1" class="q-card hidden">
+    <h3>How are you feeling right now?</h3>
+    <p>Your mood shapes the vibe of your playlist.</p>
+    <div class="choice-grid">
+      <button class="choice-btn" onclick="pick('mood','Happy',this)">    <span class="emoji">😄</span>Happy</button>
+      <button class="choice-btn" onclick="pick('mood','Relaxed',this)">  <span class="emoji">😌</span>Relaxed</button>
+      <button class="choice-btn" onclick="pick('mood','Energetic',this)"><span class="emoji">⚡</span>Energetic</button>
+      <button class="choice-btn" onclick="pick('mood','Sad',this)">      <span class="emoji">😢</span>Sad</button>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="goBack(0)">← Back</button>
+      <button class="btn btn-green"   onclick="goNext(2)">Next →</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Duration -->
+  <div id="step-2" class="q-card hidden">
+    <h3>How long do you want to listen?</h3>
+    <p>We'll match the playlist length to your session.</p>
+    <div class="choice-grid">
+      <button class="choice-btn" onclick="pick('duration','Short',this)">    <span class="emoji">⏱</span>Short<span style="font-size:0.72rem;color:var(--grey)">15 mins</span></button>
+      <button class="choice-btn" onclick="pick('duration','Medium',this)">   <span class="emoji">🕐</span>Medium<span style="font-size:0.72rem;color:var(--grey)">30–60 mins</span></button>
+      <button class="choice-btn" onclick="pick('duration','Long',this)">     <span class="emoji">🌙</span>Long<span style="font-size:0.72rem;color:var(--grey)">2+ hours</span></button>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="goBack(1)">← Back</button>
+      <button class="btn btn-green"   onclick="goNext(3)">Next →</button>
+    </div>
+  </div>
+
+  <!-- Step 3: Playlist Size -->
+  <div id="step-3" class="q-card hidden">
+    <h3>How many songs in your playlist?</h3>
+    <p>Drag to customise your playlist size (5–50 songs).</p>
+    <div style="margin-bottom:20px;">
+      <div class="range-row">
+        <input type="range" min="5" max="50" value="15" id="plRange"
+          oninput="document.getElementById('plVal').textContent=this.value"/>
+        <div class="range-val" id="plVal">15</div>
+      </div>
+      <div class="range-labels"><span>5 songs</span><span>50 songs</span></div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="goBack(2)">← Back</button>
+      <button class="btn btn-green"   onclick="generate()">✦ Find My Playlist</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RESULT ═══ -->
+<div class="screen" id="screen-result">
+  <h1 class="page-title">Your Recommendation</h1>
+  <p class="page-sub" id="r-sub">Based on your answers</p>
+  <div class="result-hero">
+    <div class="result-badge">♫ Recommended for you</div>
+    <div class="result-artist" id="r-artist">—</div>
+    <div class="result-meta"   id="r-meta">—</div>
+    <div class="result-playlist" id="r-playlist-box">
+      <div>
+        <div class="pl-label">PLAYLIST</div>
+        <div class="pl-name" id="r-pl-name">—</div>
+      </div>
+    </div>
+    <div id="r-songs"></div>
+    <div class="fun-fact"     id="r-fact"></div>
+    <div class="duration-note" id="r-duration-note"></div>
+  </div>
+  <div class="result-actions">
+    <button class="btn btn-green"   onclick="saveResult()">❤️ &nbsp;Save</button>
+    <button class="btn btn-outline" onclick="addPlaylist()">+ Playlist</button>
+    <button class="btn btn-outline" onclick="nav('recommend')">Try Again</button>
+    <button class="btn btn-ghost"   onclick="nav('home')">← Home</button>
+  </div>
+</div>
+
+<!-- ═══ SAVED ═══ -->
+<div class="screen" id="screen-saved">
+  <h1 class="page-title">Saved Playlists</h1>
+  <p class="page-sub">Your liked recommendations.</p>
+  <div class="cards-grid" id="saved-grid">
+    <div class="empty-state"><div class="big-icon">❤️</div><p>No saved playlists yet.</p></div>
+  </div>
+</div>
+
+<!-- ═══ HISTORY ═══ -->
+<div class="screen" id="screen-history">
+  <h1 class="page-title">History</h1>
+  <p class="page-sub">All your past recommendations this session.</p>
+  <div style="margin-bottom:14px;">
+    <button class="btn btn-outline btn-sm" onclick="clearHistory()">Clear All</button>
+  </div>
+  <div class="cards-grid" id="history-grid">
+    <div class="empty-state"><div class="big-icon">🕐</div><p>No history yet.</p></div>
+  </div>
+</div>
+
+<!-- ═══ PLAYLIST ═══ -->
+<div class="screen" id="screen-playlist">
+  <h1 class="page-title">My Playlist</h1>
+  <p class="page-sub" id="pl-sub">Your custom playlist.</p>
+  <div id="pl-wrap">
+    <div class="empty-state"><div class="big-icon">📋</div><p>Add songs from recommendations!</p></div>
+  </div>
+</div>
+
+<!-- ═══ ABOUT ═══ -->
+<div class="screen" id="screen-about">
+  <h1 class="page-title">About Spotify & Disruptive Innovation</h1>
+  <p class="page-sub">How Spotify changed the music industry forever.</p>
+
+  <div class="about-card">
+    <h3>What is Spotify?</h3>
+    <p>Spotify is a leading digital music streaming service founded in 2006 in Stockholm, Sweden. It offers on-demand access to millions of songs, podcasts, and playlists across all devices.</p>
+  </div>
+
+  <div class="about-card">
+    <h3>Clayton Christensen's Disruptive Innovation Model</h3>
+    <p>As discussed in Part 1 of our project, Spotify is a textbook example of Clayton Christensen's Disruptive Innovation Model. It entered the market at a lower price point and simpler experience, then rapidly improved to dominate.</p>
+    <ul class="bullet-list">
+      <li>Replaced physical CDs and vinyl records.</li>
+      <li>Disrupted digital downloads like iTunes with subscription streaming.</li>
+      <li>Introduced data-driven personalisation at massive scale.</li>
+      <li>Made music globally accessible on any device, anytime.</li>
+      <li>Grew from startup to over 600 million users worldwide.</li>
+    </ul>
+  </div>
+
+  <div class="about-card">
+    <h3>Connection to This Program</h3>
+    <p>This recommendation engine mimics Spotify's core algorithm — using user data (genre, mood, listening habits) to deliver personalised playlists. It directly reflects the innovation life cycle explored in our Part 1 poster.</p>
+  </div>
+
+  <div class="about-card">
+    <h3>About This Project</h3>
+    <p>Course: LDCW6123 – Fundamentals of Digital Competence for Programmer<br>
+    Trimester: 2610 | Group Project</p>
+  </div>
+</div>
+
+</main>
+</div>
+
+<div id="toast">Saved!</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────
+let currentUser = null;
+let users       = {};
+let answers     = { genre:null, mood:null, duration:null };
+let currentResult = null;
+let history  = [];
+let saved    = [];
+let playlist = [];
+
+// ── RECOMMENDATION DATABASE (matches main.py exactly) ──
+const DB = {
+  Pop: {
+    Happy:    { playlist:"Today's Top Hits",    artists:["Taylor Swift","Olivia Rodrigo","Sabrina Carpenter"],       songs:["Cruel Summer","vampire","Espresso"],                     fact:"Taylor Swift's Cruel Summer became her first #1 hit after years of fan campaigns." },
+    Relaxed:  { playlist:"Chill Hits",           artists:["Billie Eilish","Lauv","Conan Gray"],                        songs:["Ocean Eyes","I Like Me Better","Heather"],               fact:"Ocean Eyes was written and produced by Billie Eilish's brother Finneas in 2016." },
+    Energetic:{ playlist:"Pop Rising",           artists:["Dua Lipa","Ariana Grande","Doja Cat"],                      songs:["Levitating","yes, and?","Paint The Town Red"],            fact:"Dua Lipa became the first female solo artist with 2 Brit Awards for Best Album." },
+    Sad:      { playlist:"Sad Pop Mix",          artists:["Billie Eilish","Lewis Capaldi","Adele"],                    songs:["What Was I Made For?","Someone You Loved","Easy On Me"],  fact:"Someone You Loved spent 7 weeks at #1 in the UK charts." },
+  },
+  Rock: {
+    Happy:    { playlist:"Rock Classics",        artists:["Queen","Bon Jovi","Journey"],                               songs:["Don't Stop Me Now","Livin' On A Prayer","Don't Stop Believin'"], fact:"Don't Stop Me Now was recorded in one take during a late-night studio session." },
+    Relaxed:  { playlist:"Soft Rock Drive",      artists:["Coldplay","The Script","Imagine Dragons"],                  songs:["Yellow","Breakeven","Demons"],                           fact:"Yellow was written by Chris Martin about his feelings for a girl he had a crush on." },
+    Energetic:{ playlist:"Rock Workout",         artists:["AC/DC","Linkin Park","Metallica"],                          songs:["Thunderstruck","Numb","Enter Sandman"],                   fact:"Thunderstruck opens with one of the most iconic guitar riffs in rock history." },
+    Sad:      { playlist:"Acoustic Rock",        artists:["Nirvana","Foo Fighters","Pearl Jam"],                       songs:["Something In The Way","Everlong","Black"],                fact:"Everlong is Dave Grohl's personal favourite Foo Fighters song." },
+  },
+  "Hip-Hop": {
+    Happy:    { playlist:"RapCaviar",            artists:["Drake","Travis Scott","Lil Baby"],                          songs:["God's Plan","SICKO MODE","Drip Too Hard"],               fact:"God's Plan music video gave away the entire $999,631 budget to people in Miami." },
+    Relaxed:  { playlist:"Mellow Bars",          artists:["J. Cole","Kendrick Lamar","Logic"],                         songs:["No Role Modelz","LOVE.","1-800-273-8255"],               fact:"Kendrick Lamar was the first rapper to win the Pulitzer Prize for Music." },
+    Energetic:{ playlist:"Beast Mode",           artists:["Eminem","50 Cent","DMX"],                                   songs:["Till I Collapse","In Da Club","X Gon' Give It To Ya"],  fact:"Till I Collapse is one of the most used songs in sports highlight reels ever." },
+    Sad:      { playlist:"Late Night Hip-Hop",   artists:["Kendrick Lamar","Post Malone","The Weeknd"],                songs:["PRIDE.","Circles","Call Out My Name"],                   fact:"Post Malone's Circles spent 65 weeks on the Billboard Hot 100." },
+  },
+  Jazz: {
+    Happy:    { playlist:"Jazz Vibes",           artists:["Louis Armstrong","Ella Fitzgerald","Frank Sinatra"],        songs:["What A Wonderful World","Dream A Little Dream","Fly Me To The Moon"], fact:"What A Wonderful World was initially rejected by US labels but topped UK charts." },
+    Relaxed:  { playlist:"Smooth Jazz",          artists:["Kenny G","Dave Koz","George Benson"],                       songs:["Songbird","You Make Me Smile","Breezin'"],               fact:"Kenny G's Songbird stayed on the Billboard charts for over 3 years." },
+    Energetic:{ playlist:"Jazz Fusion",          artists:["Miles Davis","Herbie Hancock","Chick Corea"],               songs:["So What","Chameleon","Spain"],                           fact:"Miles Davis' Kind of Blue is the best-selling jazz album of all time." },
+    Sad:      { playlist:"Blue Note Sessions",   artists:["John Coltrane","Chet Baker","Bill Evans"],                  songs:["In A Sentimental Mood","My Funny Valentine","Peace Piece"], fact:"Chet Baker's melancholic trumpet style influenced generations of jazz musicians." },
+  },
+  Classical: {
+    Happy:    { playlist:"Mozart for Joy",       artists:["Mozart","Beethoven","Haydn"],                               songs:["Eine kleine Nachtmusik","Symphony No. 5","The Creation"], fact:"Mozart composed over 600 works in his short 35-year life." },
+    Relaxed:  { playlist:"Peaceful Piano",       artists:["Ludovico Einaudi","Yiruma","Max Richter"],                  songs:["Nuvole Bianche","River Flows In You","On The Nature Of Daylight"], fact:"River Flows In You by Yiruma has over 1 billion streams on Spotify." },
+    Energetic:{ playlist:"Classical Focus",      artists:["Bach","Antonio Vivaldi","Philip Glass"],                    songs:["Cello Suite No.1","Spring","Opening"],                   fact:"Vivaldi's Four Seasons is one of the most recorded classical pieces in history." },
+    Sad:      { playlist:"Classical Essentials", artists:["Frédéric Chopin","Claude Debussy","Tchaikovsky"],           songs:["Nocturne Op.9 No.2","Clair de Lune","Swan Lake"],        fact:"Clair de Lune is Debussy's most beloved and most-streamed classical piece." },
+  },
+};
+
+const DURATION_NOTE = {
+  Short:  "Great for a quick 15-minute mood boost.",
+  Medium: "Perfect for a focused 30–60 minute session.",
+  Long:   "Ideal for a long 2+ hour deep listening journey.",
+};
+
+// ── AUTH ───────────────────────────────────────────────
+function signIn() {
+  const name   = v('si-name');
+  const gender = v('si-gender');
+  const email  = v('si-email');
+  const pass   = v('si-pass');
+  if (!name||!gender||!email||!pass){ toast('Please fill in all fields'); return; }
+  if (!users[email]) users[email] = { name, gender, password:pass };
+  if (users[email].password !== pass){ toast('Incorrect password'); return; }
+  currentUser = { email, name:users[email].name, gender:users[email].gender };
+  onLogin();
+}
+
+function signUp() {
+  const name   = v('su-name');
+  const gender = v('su-gender');
+  const email  = v('su-email');
+  const pass   = v('su-pass');
+  if (!name||!gender||!email||!pass){ toast('Please fill in all fields'); return; }
+  if (pass.length < 6){ toast('Password must be at least 6 characters'); return; }
+  if (users[email]){ toast('Account exists — sign in instead'); return; }
+  users[email] = { name, gender, password:pass };
+  currentUser  = { email, name, gender };
+  onLogin();
+}
+
+function onLogin() {
+  document.getElementById('navUser').classList.remove('hidden');
+  document.getElementById('navAvatar').textContent = currentUser.name[0].toUpperCase();
+  document.getElementById('navName').textContent   = currentUser.name;
+  document.getElementById('btnLogout').classList.remove('hidden');
+  document.getElementById('btnSigninNav').classList.add('hidden');
+  document.getElementById('sidebar').classList.remove('hidden');
+  const h = new Date().getHours();
+  document.getElementById('greet-time').textContent = h<12?'morning':h<18?'afternoon':'evening';
+  document.getElementById('greet-name').textContent = currentUser.name;
+  nav('home'); updateCounts();
+}
+
+function logout() {
+  currentUser=null; history=[]; saved=[]; playlist=[];
+  answers={genre:null,mood:null,duration:null};
+  document.getElementById('navUser').classList.add('hidden');
+  document.getElementById('btnLogout').classList.add('hidden');
+  document.getElementById('btnSigninNav').classList.remove('hidden');
+  document.getElementById('sidebar').classList.add('hidden');
+  showScreen('signin'); resetSteps();
+}
+
+// ── NAVIGATION ─────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+}
+
+function nav(id) {
+  showScreen(id);
+  document.querySelectorAll('.sidebar-btn').forEach(b=>b.classList.remove('active'));
+  const sb = document.getElementById('sb-'+id);
+  if (sb) sb.classList.add('active');
+  if (id==='saved')    renderSaved();
+  if (id==='history')  renderHistory();
+  if (id==='playlist') renderPlaylist();
+  if (id==='recommend') resetSteps();
+}
+
+// ── STEPS ──────────────────────────────────────────────
+function resetSteps() {
+  answers = { genre:null, mood:null, duration:null };
+  [0,1,2,3].forEach(i => {
+    document.getElementById('step-'+i).classList.add('hidden');
+    document.getElementById('pill-'+i).className = 'step-pill';
+  });
+  document.getElementById('step-0').classList.remove('hidden');
+  document.getElementById('pill-0').className = 'step-pill current';
+  document.querySelectorAll('.choice-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('plRange').value = 15;
+  document.getElementById('plVal').textContent = 15;
+}
+
+function goNext(to) {
+  const keys = ['genre','mood','duration'];
+  const from = to - 1;
+  if (from < keys.length && !answers[keys[from]]) { toast('Please make a selection first'); return; }
+  document.getElementById('step-'+from).classList.add('hidden');
+  document.getElementById('step-'+to).classList.remove('hidden');
+  document.getElementById('pill-'+from).className = 'step-pill done';
+  document.getElementById('pill-'+to).className   = 'step-pill current';
+}
+
+function goBack(to) {
+  const from = to + 1;
+  document.getElementById('step-'+from).classList.add('hidden');
+  document.getElementById('step-'+to).classList.remove('hidden');
+  document.getElementById('pill-'+from).className = 'step-pill';
+  document.getElementById('pill-'+to).className   = 'step-pill current';
+}
+
+function pick(key, val, btn) {
+  answers[key] = val;
+  btn.closest('.choice-grid').querySelectorAll('.choice-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+// ── GENERATE ───────────────────────────────────────────
+function generate() {
+  if (!answers.genre||!answers.mood||!answers.duration) { toast('Please complete all steps'); return; }
+  const plSize = parseInt(document.getElementById('plRange').value);
+  const data   = DB[answers.genre]?.[answers.mood];
+  if (!data) { toast('No match found, try again'); return; }
+
+  // Pick random artist & song (like main.py random.choice)
+  const artist = data.artists[Math.floor(Math.random()*data.artists.length)];
+  const song   = data.songs[Math.floor(Math.random()*data.songs.length)];
+
+  currentResult = {
+    genre: answers.genre, mood: answers.mood,
+    duration: answers.duration, plSize,
+    playlist: data.playlist, artist, song,
+    songs: data.songs, artists: data.artists,
+    fact: data.fact,
+    date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})
+  };
+  history.unshift({...currentResult});
+
+  // Render
+  document.getElementById('r-artist').textContent  = artist;
+  document.getElementById('r-meta').textContent    = answers.genre + ' · ' + answers.mood + ' · ' + answers.duration + ' · ' + plSize + ' songs';
+  document.getElementById('r-pl-name').textContent = data.playlist;
+  document.getElementById('r-sub').textContent     = `For ${currentUser?.name||'you'} · ${answers.genre} · ${answers.mood}`;
+  document.getElementById('r-fact').innerHTML      = `<strong>Fun Fact:</strong> ${data.fact}`;
+  document.getElementById('r-duration-note').innerHTML = `<strong>Why this pick:</strong> ${DURATION_NOTE[answers.duration]}`;
+
+  const songsEl = document.getElementById('r-songs');
+  songsEl.innerHTML = '';
+  data.songs.forEach((s,i) => {
+    songsEl.innerHTML += `
+      <div class="song-row">
+        <span class="song-num">${i+1}</span>
+        <div style="flex:1">
+          <div class="song-title">${s}</div>
+          <div class="song-artist">${data.artists[i]||artist}</div>
+        </div>
+        <span class="song-icon">♪</span>
+      </div>`;
+  });
+
+  document.getElementById('pill-3').className = 'step-pill done';
+  nav('result'); updateCounts();
+}
+
+// ── SAVE / PLAYLIST ────────────────────────────────────
+function saveResult() {
+  if (!currentResult) return;
+  if (saved.find(s=>s.artist===currentResult.artist&&s.date===currentResult.date)) { toast('Already saved!'); return; }
+  saved.unshift({...currentResult});
+  toast('Saved to library ❤️'); updateCounts();
+}
+
+function addPlaylist() {
+  if (!currentResult) return;
+  let added = 0;
+  currentResult.songs.forEach((song,i) => {
+    const artist = currentResult.artists[i]||currentResult.artist;
+    if (!playlist.find(p=>p.song===song&&p.artist===artist)) {
+      playlist.push({ song, artist, genre:currentResult.genre });
+      added++;
+    }
+  });
+  toast(added>0 ? `Added ${added} songs to playlist!` : 'Already in playlist');
+  updateCounts();
+}
+
+// ── RENDER HISTORY ─────────────────────────────────────
+function renderHistory() {
+  const grid = document.getElementById('history-grid');
+  if (!history.length) {
+    grid.innerHTML = `<div class="empty-state"><div class="big-icon">🕐</div><p>No history yet.<br>Get your first recommendation!</p></div>`; return;
+  }
+  grid.innerHTML = history.map((h,i) => `
+    <div class="h-card">
+      <div class="h-card-top">
+        <div class="h-artist">${h.artist}</div>
+        <div class="h-date">${h.date}</div>
+      </div>
+      <div class="tags">
+        <span class="tag g">${h.genre}</span>
+        <span class="tag">${h.mood}</span>
+        <span class="tag">${h.duration}</span>
+        <span class="tag">${h.plSize} songs</span>
+      </div>
+      <div class="h-songs">${h.playlist} · ${h.songs.join(' · ')}</div>
+      <div class="h-card-actions">
+        <button class="icon-btn" onclick="restoreResult(${i})">↩ View</button>
+        <button class="icon-btn red" onclick="delHistory(${i})">✕ Remove</button>
+      </div>
+    </div>`).join('');
+}
+
+function delHistory(i) { history.splice(i,1); renderHistory(); updateCounts(); toast('Removed'); }
+function clearHistory() { history=[]; renderHistory(); updateCounts(); toast('History cleared'); }
+
+function restoreResult(i) {
+  const h = history[i];
+  currentResult = {...h};
+  const data = DB[h.genre]?.[h.mood];
+  if (!data) return;
+  document.getElementById('r-artist').textContent  = h.artist;
+  document.getElementById('r-meta').textContent    = h.genre + ' · ' + h.mood + ' · ' + h.duration + ' · ' + h.plSize + ' songs';
+  document.getElementById('r-pl-name').textContent = h.playlist;
+  document.getElementById('r-sub').textContent     = `Viewed from history · ${h.date}`;
+  document.getElementById('r-fact').innerHTML      = `<strong>Fun Fact:</strong> ${data.fact}`;
+  document.getElementById('r-duration-note').innerHTML = `<strong>Why this pick:</strong> ${DURATION_NOTE[h.duration]}`;
+  const songsEl = document.getElementById('r-songs');
+  songsEl.innerHTML = '';
+  data.songs.forEach((s,i) => {
+    songsEl.innerHTML += `<div class="song-row"><span class="song-num">${i+1}</span><div style="flex:1"><div class="song-title">${s}</div><div class="song-artist">${data.artists[i]||h.artist}</div></div><span class="song-icon">♪</span></div>`;
+  });
+  nav('result');
+}
+
+// ── RENDER SAVED ───────────────────────────────────────
+function renderSaved() {
+  const grid = document.getElementById('saved-grid');
+  if (!saved.length) {
+    grid.innerHTML = `<div class="empty-state"><div class="big-icon">❤️</div><p>No saved playlists yet.<br>Hit Save after a recommendation!</p></div>`; return;
+  }
+  grid.innerHTML = saved.map((s,i) => `
+    <div class="h-card">
+      <div class="h-card-top">
+        <div class="h-artist">${s.artist}</div>
+        <div class="h-date">${s.date}</div>
+      </div>
+      <div class="tags">
+        <span class="tag g">${s.genre}</span>
+        <span class="tag">${s.mood}</span>
+        <span class="tag">${s.duration}</span>
+      </div>
+      <div class="h-songs">${s.playlist} · ${s.songs.join(' · ')}</div>
+      <div class="h-card-actions">
+        <button class="icon-btn red" onclick="delSaved(${i})">✕ Remove</button>
+      </div>
+    </div>`).join('');
+}
+
+function delSaved(i) { saved.splice(i,1); renderSaved(); updateCounts(); toast('Removed from saved'); }
+
+// ── RENDER PLAYLIST ────────────────────────────────────
+function renderPlaylist() {
+  const wrap = document.getElementById('pl-wrap');
+  const sub  = document.getElementById('pl-sub');
+  if (!playlist.length) {
+    wrap.innerHTML = `<div class="empty-state"><div class="big-icon">📋</div><p>Your playlist is empty.<br>Add songs from recommendations!</p></div>`;
+    sub.textContent = 'Your custom playlist.'; return;
+  }
+  sub.textContent = `${playlist.length} song${playlist.length!==1?'s':''} in your playlist`;
+  wrap.innerHTML = `
+    <div class="pl-card">
+      <div class="pl-header">
+        <span class="pl-title">My Playlist</span>
+        <span class="pl-count">${playlist.length} songs</span>
+      </div>
+      ${playlist.map((p,i)=>`
+        <div class="pl-item">
+          <div class="pl-dot"></div>
+          <div style="flex:1">
+            <div style="font-weight:500;font-size:0.88rem">${p.song}</div>
+            <div style="font-size:0.74rem;color:var(--grey)">${p.artist} · ${p.genre}</div>
+          </div>
+          <button class="icon-btn red" onclick="delPl(${i})">✕</button>
+        </div>`).join('')}
+      <div style="margin-top:14px;">
+        <button class="btn btn-outline btn-sm" onclick="clearPl()">Clear Playlist</button>
+      </div>
+    </div>`;
+}
+
+function delPl(i)  { playlist.splice(i,1); renderPlaylist(); updateCounts(); toast('Removed'); }
+function clearPl() { playlist=[]; renderPlaylist(); updateCounts(); toast('Playlist cleared'); }
+
+// ── COUNTS ─────────────────────────────────────────────
+function updateCounts() {
+  document.getElementById('home-saved-count').textContent = saved.length + ' saved';
+  document.getElementById('home-hist-count').textContent  = history.length + ' session' + (history.length!==1?'s':'');
+  document.getElementById('home-pl-count').textContent    = playlist.length ? playlist.length + ' songs' : 'Build your list';
+}
+
+// ── TOAST ──────────────────────────────────────────────
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+// ── UTIL ───────────────────────────────────────────────
+function v(id) { return document.getElementById(id).value.trim(); }
+</script>
+</body>
+</html>
