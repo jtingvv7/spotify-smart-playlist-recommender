@@ -15,9 +15,10 @@ def show_menu():
     print("="*41)
     print("1. Get Playlist Recommendation")
     print("2. View Available Genres")
-    print("3. View Recommendation History")
-    print("4. About Spotify & Its Innovation")
-    print("5. Exit")
+    print("3. View Available Moods")
+    print("4. View Recommendation History")
+    print("5. About Spotify & Its Innovation")
+    print("6. Exit")
     print("="*41)
 
 def get_valid_choice(prompt, valid_choices):
@@ -150,6 +151,15 @@ def view_genres():
     print("5. Classical - Orchestral and traditional compositions.")
     input("\nPress Enter to return to the main menu...")
 
+def view_moods():
+    clear_screen()
+    print("\n--- Available Moods ---")
+    print("1. Happy")
+    print("2. Relaxed")
+    print("3. Energetic")
+    print("4. Sad")
+    input("\nPress Enter to return to the main menu...")
+
 def view_history():
     clear_screen()
     print("\n--- Recommendation History ---")
@@ -163,6 +173,7 @@ def view_history():
             print("-"*40)
 
     input("\nPress Enter to return...")
+
 
 def about_spotify():
     """Explains the connection between Spotify and the Disruptive Innovation Model."""
@@ -189,12 +200,15 @@ def main():
             view_genres()
 
         elif choice == "3":
-            view_history()
+            view_moods()
 
         elif choice == "4":
-            about_spotify()
+            view_history()
 
         elif choice == "5":
+            about_spotify()
+
+        elif choice == "6":
             clear_screen()
             print("Thank you for using Spotify Smart Playlist Recommender!")
             break
