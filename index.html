@@ -208,27 +208,18 @@ main{flex:1;padding:32px;overflow-y:auto;}
 }
 .result-playlist .pl-label{color:var(--grey);font-size:0.75rem;margin-bottom:2px;}
 .result-playlist .pl-name{font-weight:600;}
-.song-row{
-  display:flex;align-items:center;gap:14px;
+.result-song-box{
   background:var(--card);border-radius:8px;
-  padding:11px 14px;margin-bottom:8px;transition:background 0.15s;
+  padding:10px 16px;margin-bottom:8px;
+  font-size:0.88rem;
 }
-.song-row:hover{background:var(--card2);}
-.song-num{color:var(--dark-grey);font-size:0.78rem;width:16px;text-align:center;}
-.song-title{font-size:0.88rem;font-weight:500;}
-.song-artist{font-size:0.74rem;color:var(--grey);margin-top:1px;}
-.song-icon{color:var(--green);font-size:0.9rem;margin-left:auto;}
+.result-song-box .pl-label{color:var(--grey);font-size:0.75rem;margin-bottom:2px;}
+.result-song-box .pl-name{font-weight:600;}
 
-.fun-fact{
-  background:var(--card);border-left:3px solid var(--green);
-  border-radius:0 8px 8px 0;padding:12px 14px;
-  font-size:0.82rem;color:var(--grey);margin-top:14px;
-}
-.fun-fact strong{color:var(--green);}
 .duration-note{
   background:var(--card);border-left:3px solid var(--yellow);
   border-radius:0 8px 8px 0;padding:10px 14px;
-  font-size:0.82rem;color:var(--grey);margin-top:10px;
+  font-size:0.82rem;color:var(--grey);margin-top:14px;white-space:pre-line;
 }
 .duration-note strong{color:var(--yellow);}
 
@@ -450,7 +441,7 @@ main{flex:1;padding:32px;overflow-y:auto;}
     <div class="home-card" onclick="nav('recommend')">
       <div class="hc-icon">🎵</div>
       <div class="hc-title">New Recommendation</div>
-      <div class="hc-sub">Answer 4 quick questions</div>
+      <div class="hc-sub">Answer 3 quick questions</div>
     </div>
     <div class="home-card" onclick="nav('saved')">
       <div class="hc-icon">❤️</div>
@@ -532,20 +523,25 @@ main{flex:1;padding:32px;overflow-y:auto;}
 
 <!-- ═══ RESULT ═══ -->
 <div class="screen" id="screen-result">
-  <h1 class="page-title">Your Recommendation</h1>
+  <h1 class="page-title">Spotify Recommendation</h1>
   <p class="page-sub" id="r-sub">Based on your answers</p>
   <div class="result-hero">
     <div class="result-badge">♫ Recommended for you</div>
-    <div class="result-artist" id="r-artist">—</div>
-    <div class="result-meta"   id="r-meta">—</div>
+    <div class="result-meta" id="r-meta" style="margin-bottom:16px;"></div>
     <div class="result-playlist" id="r-playlist-box">
       <div>
-        <div class="pl-label">PLAYLIST</div>
+        <div class="pl-label">RECOMMENDED PLAYLIST</div>
         <div class="pl-name" id="r-pl-name">—</div>
       </div>
     </div>
-    <div id="r-songs"></div>
-    <div class="fun-fact"     id="r-fact"></div>
+    <div class="result-song-box">
+      <div class="pl-label">RECOMMENDED SONG</div>
+      <div class="pl-name" id="r-song">—</div>
+    </div>
+    <div class="result-song-box">
+      <div class="pl-label">ARTIST</div>
+      <div class="pl-name" id="r-artist">—</div>
+    </div>
     <div class="duration-note" id="r-duration-note"></div>
   </div>
   <div class="result-actions">
@@ -567,7 +563,7 @@ main{flex:1;padding:32px;overflow-y:auto;}
 
 <!-- ═══ HISTORY ═══ -->
 <div class="screen" id="screen-history">
-  <h1 class="page-title">History</h1>
+  <h1 class="page-title">Recommendation History</h1>
   <p class="page-sub">All your past recommendations this session.</p>
   <div style="margin-bottom:14px;">
     <button class="btn btn-outline btn-sm" onclick="clearHistory()">Clear All</button>
@@ -592,32 +588,16 @@ main{flex:1;padding:32px;overflow-y:auto;}
   <p class="page-sub">How Spotify changed the music industry forever.</p>
 
   <div class="about-card">
-    <h3>What is Spotify?</h3>
-    <p>Spotify is a leading digital music streaming service founded in 2006 in Stockholm, Sweden. It offers on-demand access to millions of songs, podcasts, and playlists across all devices.</p>
+    <h3>About Spotify & Disruptive Innovation</h3>
+    <p>Spotify is a leading digital music streaming service. As discussed in
+    Part 1 of our project, Spotify represents Clayton Christensen's
+    Disruptive Innovation Model. It disrupted the traditional physical
+    record market (CDs/Vinyl) and early digital downloading models (like
+    iTunes) by offering a subscription-based, on-demand streaming service.</p>
+    <p>This program mimics its core algorithm by recommending playlists
+    based on user preferences, genre, mood, and listening habits.</p>
   </div>
 
-  <div class="about-card">
-    <h3>Clayton Christensen's Disruptive Innovation Model</h3>
-    <p>As discussed in Part 1 of our project, Spotify is a textbook example of Clayton Christensen's Disruptive Innovation Model. It entered the market at a lower price point and simpler experience, then rapidly improved to dominate.</p>
-    <ul class="bullet-list">
-      <li>Replaced physical CDs and vinyl records.</li>
-      <li>Disrupted digital downloads like iTunes with subscription streaming.</li>
-      <li>Introduced data-driven personalisation at massive scale.</li>
-      <li>Made music globally accessible on any device, anytime.</li>
-      <li>Grew from startup to over 600 million users worldwide.</li>
-    </ul>
-  </div>
-
-  <div class="about-card">
-    <h3>Connection to This Program</h3>
-    <p>This recommendation engine mimics Spotify's core algorithm — using user data (genre, mood, listening habits) to deliver personalised playlists. It directly reflects the innovation life cycle explored in our Part 1 poster.</p>
-  </div>
-
-  <div class="about-card">
-    <h3>About This Project</h3>
-    <p>Course: LDCW6123 – Fundamentals of Digital Competence for Programmer<br>
-    Trimester: 2610 | Group Project</p>
-  </div>
 </div>
 
 </main>
@@ -635,44 +615,45 @@ let history  = [];
 let saved    = [];
 let playlist = [];
 
-// ── RECOMMENDATION DATABASE (matches main.py exactly) ──
+// ── RECOMMENDATION DATABASE (matches main.py exactly: paired artist/song tracks) ──
 const DB = {
   Pop: {
-    Happy:    { playlist:"Today's Top Hits",    artists:["Taylor Swift","Olivia Rodrigo","Sabrina Carpenter"],       songs:["Cruel Summer","vampire","Espresso"],                     fact:"Taylor Swift's Cruel Summer became her first #1 hit after years of fan campaigns." },
-    Relaxed:  { playlist:"Chill Hits",           artists:["Billie Eilish","Lauv","Conan Gray"],                        songs:["Ocean Eyes","I Like Me Better","Heather"],               fact:"Ocean Eyes was written and produced by Billie Eilish's brother Finneas in 2016." },
-    Energetic:{ playlist:"Pop Rising",           artists:["Dua Lipa","Ariana Grande","Doja Cat"],                      songs:["Levitating","yes, and?","Paint The Town Red"],            fact:"Dua Lipa became the first female solo artist with 2 Brit Awards for Best Album." },
-    Sad:      { playlist:"Sad Pop Mix",          artists:["Billie Eilish","Lewis Capaldi","Adele"],                    songs:["What Was I Made For?","Someone You Loved","Easy On Me"],  fact:"Someone You Loved spent 7 weeks at #1 in the UK charts." },
+    Happy:    { playlist:"Today's Top Hits",    tracks:[{artist:"Taylor Swift",song:"Cruel Summer"},{artist:"Olivia Rodrigo",song:"vampire"},{artist:"Sabrina Carpenter",song:"Espresso"}] },
+    Relaxed:  { playlist:"Chill Hits",           tracks:[{artist:"Billie Eilish",song:"Ocean Eyes"},{artist:"Lauv",song:"I Like Me Better"},{artist:"Conan Gray",song:"Heather"}] },
+    Energetic:{ playlist:"Pop Rising",           tracks:[{artist:"Dua Lipa",song:"Levitating"},{artist:"Ariana Grande",song:"yes, and?"},{artist:"Doja Cat",song:"Paint The Town Red"}] },
+    Sad:      { playlist:"Sad Pop Mix",          tracks:[{artist:"Billie Eilish",song:"What Was I Made For?"},{artist:"Lewis Capaldi",song:"Someone You Loved"},{artist:"Adele",song:"Easy On Me"}] },
   },
   Rock: {
-    Happy:    { playlist:"Rock Classics",        artists:["Queen","Bon Jovi","Journey"],                               songs:["Don't Stop Me Now","Livin' On A Prayer","Don't Stop Believin'"], fact:"Don't Stop Me Now was recorded in one take during a late-night studio session." },
-    Relaxed:  { playlist:"Soft Rock Drive",      artists:["Coldplay","The Script","Imagine Dragons"],                  songs:["Yellow","Breakeven","Demons"],                           fact:"Yellow was written by Chris Martin about his feelings for a girl he had a crush on." },
-    Energetic:{ playlist:"Rock Workout",         artists:["AC/DC","Linkin Park","Metallica"],                          songs:["Thunderstruck","Numb","Enter Sandman"],                   fact:"Thunderstruck opens with one of the most iconic guitar riffs in rock history." },
-    Sad:      { playlist:"Acoustic Rock",        artists:["Nirvana","Foo Fighters","Pearl Jam"],                       songs:["Something In The Way","Everlong","Black"],                fact:"Everlong is Dave Grohl's personal favourite Foo Fighters song." },
+    Happy:    { playlist:"Rock Classics",        tracks:[{artist:"Queen",song:"Don't Stop Me Now"},{artist:"Bon Jovi",song:"Livin' On A Prayer"},{artist:"Journey",song:"Don't Stop Believin'"}] },
+    Relaxed:  { playlist:"Soft Rock Drive",      tracks:[{artist:"Coldplay",song:"Yellow"},{artist:"The Script",song:"Breakeven"},{artist:"Imagine Dragons",song:"Demons"}] },
+    Energetic:{ playlist:"Rock Workout",         tracks:[{artist:"AC/DC",song:"Thunderstruck"},{artist:"Linkin Park",song:"Numb"},{artist:"Metallica",song:"Enter Sandman"}] },
+    Sad:      { playlist:"Acoustic Rock",        tracks:[{artist:"Nirvana",song:"Something In The Way"},{artist:"Foo Fighters",song:"Everlong"},{artist:"Pearl Jam",song:"Black"}] },
   },
   "Hip-Hop": {
-    Happy:    { playlist:"RapCaviar",            artists:["Drake","Travis Scott","Lil Baby"],                          songs:["God's Plan","SICKO MODE","Drip Too Hard"],               fact:"God's Plan music video gave away the entire $999,631 budget to people in Miami." },
-    Relaxed:  { playlist:"Mellow Bars",          artists:["J. Cole","Kendrick Lamar","Logic"],                         songs:["No Role Modelz","LOVE.","1-800-273-8255"],               fact:"Kendrick Lamar was the first rapper to win the Pulitzer Prize for Music." },
-    Energetic:{ playlist:"Beast Mode",           artists:["Eminem","50 Cent","DMX"],                                   songs:["Till I Collapse","In Da Club","X Gon' Give It To Ya"],  fact:"Till I Collapse is one of the most used songs in sports highlight reels ever." },
-    Sad:      { playlist:"Late Night Hip-Hop",   artists:["Kendrick Lamar","Post Malone","The Weeknd"],                songs:["PRIDE.","Circles","Call Out My Name"],                   fact:"Post Malone's Circles spent 65 weeks on the Billboard Hot 100." },
+    Happy:    { playlist:"RapCaviar",            tracks:[{artist:"Drake",song:"God's Plan"},{artist:"Travis Scott",song:"SICKO MODE"},{artist:"Lil Baby",song:"Drip Too Hard"}] },
+    Relaxed:  { playlist:"Mellow Bars",          tracks:[{artist:"J. Cole",song:"No Role Modelz"},{artist:"Kendrick Lamar",song:"LOVE."},{artist:"Logic",song:"1-800-273-8255"}] },
+    Energetic:{ playlist:"Beast Mode",           tracks:[{artist:"Eminem",song:"Till I Collapse"},{artist:"50 Cent",song:"In Da Club"},{artist:"DMX",song:"X Gon' Give It To Ya"}] },
+    Sad:      { playlist:"Late Night Hip-Hop",   tracks:[{artist:"Kendrick Lamar",song:"PRIDE."},{artist:"Post Malone",song:"Circles"},{artist:"The Weeknd",song:"Call Out My Name"}] },
   },
   Jazz: {
-    Happy:    { playlist:"Jazz Vibes",           artists:["Louis Armstrong","Ella Fitzgerald","Frank Sinatra"],        songs:["What A Wonderful World","Dream A Little Dream","Fly Me To The Moon"], fact:"What A Wonderful World was initially rejected by US labels but topped UK charts." },
-    Relaxed:  { playlist:"Smooth Jazz",          artists:["Kenny G","Dave Koz","George Benson"],                       songs:["Songbird","You Make Me Smile","Breezin'"],               fact:"Kenny G's Songbird stayed on the Billboard charts for over 3 years." },
-    Energetic:{ playlist:"Jazz Fusion",          artists:["Miles Davis","Herbie Hancock","Chick Corea"],               songs:["So What","Chameleon","Spain"],                           fact:"Miles Davis' Kind of Blue is the best-selling jazz album of all time." },
-    Sad:      { playlist:"Blue Note Sessions",   artists:["John Coltrane","Chet Baker","Bill Evans"],                  songs:["In A Sentimental Mood","My Funny Valentine","Peace Piece"], fact:"Chet Baker's melancholic trumpet style influenced generations of jazz musicians." },
+    Happy:    { playlist:"Jazz Vibes",           tracks:[{artist:"Louis Armstrong",song:"What A Wonderful World"},{artist:"Ella Fitzgerald",song:"Dream A Little Dream Of Me"},{artist:"Frank Sinatra",song:"Fly Me To The Moon"}] },
+    Relaxed:  { playlist:"Smooth Jazz",          tracks:[{artist:"Kenny G",song:"Songbird"},{artist:"Dave Koz",song:"You Make Me Smile"},{artist:"George Benson",song:"Breezin'"}] },
+    Energetic:{ playlist:"Jazz Fusion",          tracks:[{artist:"Miles Davis",song:"So What"},{artist:"Herbie Hancock",song:"Chameleon"},{artist:"Chick Corea",song:"Spain"}] },
+    Sad:      { playlist:"Blue Note Sessions",   tracks:[{artist:"John Coltrane",song:"In A Sentimental Mood"},{artist:"Chet Baker",song:"My Funny Valentine"},{artist:"Bill Evans",song:"Peace Piece"}] },
   },
   Classical: {
-    Happy:    { playlist:"Mozart for Joy",       artists:["Mozart","Beethoven","Haydn"],                               songs:["Eine kleine Nachtmusik","Symphony No. 5","The Creation"], fact:"Mozart composed over 600 works in his short 35-year life." },
-    Relaxed:  { playlist:"Peaceful Piano",       artists:["Ludovico Einaudi","Yiruma","Max Richter"],                  songs:["Nuvole Bianche","River Flows In You","On The Nature Of Daylight"], fact:"River Flows In You by Yiruma has over 1 billion streams on Spotify." },
-    Energetic:{ playlist:"Classical Focus",      artists:["Bach","Antonio Vivaldi","Philip Glass"],                    songs:["Cello Suite No.1","Spring","Opening"],                   fact:"Vivaldi's Four Seasons is one of the most recorded classical pieces in history." },
-    Sad:      { playlist:"Classical Essentials", artists:["Frédéric Chopin","Claude Debussy","Tchaikovsky"],           songs:["Nocturne Op.9 No.2","Clair de Lune","Swan Lake"],        fact:"Clair de Lune is Debussy's most beloved and most-streamed classical piece." },
+    Happy:    { playlist:"Mozart for Joy",       tracks:[{artist:"Mozart",song:"Eine kleine Nachtmusik"},{artist:"Beethoven",song:"Symphony No. 5"},{artist:"Haydn",song:"The Creation"}] },
+    Relaxed:  { playlist:"Peaceful Piano",       tracks:[{artist:"Ludovico Einaudi",song:"Nuvole Bianche"},{artist:"Yiruma",song:"River Flows In You"},{artist:"Max Richter",song:"On The Nature Of Daylight"}] },
+    Energetic:{ playlist:"Classical Focus",      tracks:[{artist:"Johann Sebastian Bach",song:"Cello Suite No.1"},{artist:"Antonio Vivaldi",song:"Spring"},{artist:"Philip Glass",song:"Opening"}] },
+    Sad:      { playlist:"Classical Essentials", tracks:[{artist:"Frédéric Chopin",song:"Nocturne Op.9 No.2"},{artist:"Claude Debussy",song:"Clair de Lune"},{artist:"Pyotr Ilyich Tchaikovsky",song:"Swan Lake"}] },
   },
 };
 
-const DURATION_NOTE = {
-  Short:  "Great for a quick 15-minute mood boost.",
-  Medium: "Perfect for a focused 30–60 minute session.",
-  Long:   "Ideal for a long 2+ hour deep listening journey.",
+// Matches main.py's `reason` text exactly (same wording regardless of genre/mood)
+const REASON = {
+  Short:  "Perfect for uplifting your mood during a\nshort 15-minute listening session.",
+  Medium: "Perfect for uplifting your mood during a\n30–60 minute listening session.",
+  Long:   "Perfect for uplifting your mood during a\nlong 2+ hour listening session.",
 };
 
 // ── AUTH ───────────────────────────────────────────────
@@ -777,47 +758,32 @@ function pick(key, val, btn) {
   btn.classList.add('selected');
 }
 
-// ── GENERATE ───────────────────────────────────────────
+// ── GENERATE (mirrors main.py's recommend_playlist()) ──
 function generate() {
   if (!answers.genre||!answers.mood||!answers.duration) { toast('Please complete all steps'); return; }
-  const data   = DB[answers.genre]?.[answers.mood];
+  const data = DB[answers.genre]?.[answers.mood];
   if (!data) { toast('No match found, try again'); return; }
 
-  // Pick random artist & song (like main.py random.choice)
-  const artist = data.artists[Math.floor(Math.random()*data.artists.length)];
-  const song   = data.songs[Math.floor(Math.random()*data.songs.length)];
+  // random.choice(selection["tracks"]) — artist and song are picked together as a pair
+  const track  = data.tracks[Math.floor(Math.random()*data.tracks.length)];
+  const artist = track.artist;
+  const song   = track.song;
+  const reason = REASON[answers.duration] || "Listening duration not recognised.";
 
   currentResult = {
-    genre: answers.genre, mood: answers.mood,
-    duration: answers.duration,
-    playlist: data.playlist, artist, song,
-    songs: data.songs, artists: data.artists,
-    fact: data.fact,
+    genre: answers.genre, mood: answers.mood, duration: answers.duration,
+    playlist: data.playlist, artist, song, reason,
     date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})
   };
   history.unshift({...currentResult});
 
-  // Render
-  document.getElementById('r-artist').textContent  = artist;
-  document.getElementById('r-meta').textContent    = `${answers.genre} · ${answers.mood} · ${answers.duration}`;
+  // Render — matches the CLI's printed fields: Genre / Mood / Duration / Playlist / Artist / Song / Reason
+  document.getElementById('r-meta').textContent    = `Genre: ${answers.genre}   ·   Mood: ${answers.mood}   ·   Duration: ${answers.duration}`;
   document.getElementById('r-pl-name').textContent = data.playlist;
-  document.getElementById('r-sub').textContent     = `For ${currentUser?.name||'you'} · ${answers.genre} · ${answers.mood}`;
-  document.getElementById('r-fact').innerHTML      = `<strong>Fun Fact:</strong> ${data.fact}`;
-  document.getElementById('r-duration-note').innerHTML = `<strong>Why this pick:</strong> ${DURATION_NOTE[answers.duration]}`;
-
-  const songsEl = document.getElementById('r-songs');
-  songsEl.innerHTML = '';
-  data.songs.forEach((s,i) => {
-    songsEl.innerHTML += `
-      <div class="song-row">
-        <span class="song-num">${i+1}</span>
-        <div style="flex:1">
-          <div class="song-title">${s}</div>
-          <div class="song-artist">${data.artists[i]||artist}</div>
-        </div>
-        <span class="song-icon">♪</span>
-      </div>`;
-  });
+  document.getElementById('r-artist').textContent  = artist;
+  document.getElementById('r-song').textContent    = song;
+  document.getElementById('r-sub').textContent     = `For ${currentUser?.name||'you'}`;
+  document.getElementById('r-duration-note').innerHTML = `<strong>Reason:</strong>\n${reason}`;
 
   nav('result'); updateCounts();
 }
@@ -825,26 +791,22 @@ function generate() {
 // ── SAVE / PLAYLIST ────────────────────────────────────
 function saveResult() {
   if (!currentResult) return;
-  if (saved.find(s=>s.artist===currentResult.artist&&s.date===currentResult.date)) { toast('Already saved!'); return; }
+  if (saved.find(s=>s.artist===currentResult.artist&&s.song===currentResult.song&&s.date===currentResult.date)) { toast('Already saved!'); return; }
   saved.unshift({...currentResult});
   toast('Saved to library ❤️'); updateCounts();
 }
 
 function addPlaylist() {
   if (!currentResult) return;
-  let added = 0;
-  currentResult.songs.forEach((song,i) => {
-    const artist = currentResult.artists[i]||currentResult.artist;
-    if (!playlist.find(p=>p.song===song&&p.artist===artist)) {
-      playlist.push({ song, artist, genre:currentResult.genre });
-      added++;
-    }
-  });
-  toast(added>0 ? `Added ${added} songs to playlist!` : 'Already in playlist');
+  if (playlist.find(p=>p.song===currentResult.song&&p.artist===currentResult.artist)) {
+    toast('Already in playlist'); return;
+  }
+  playlist.push({ song: currentResult.song, artist: currentResult.artist, genre: currentResult.genre });
+  toast('Added to playlist!');
   updateCounts();
 }
 
-// ── RENDER HISTORY ─────────────────────────────────────
+// ── RENDER HISTORY (matches main.py's view_history fields) ──
 function renderHistory() {
   const grid = document.getElementById('history-grid');
   if (!history.length) {
@@ -859,9 +821,8 @@ function renderHistory() {
       <div class="tags">
         <span class="tag g">${h.genre}</span>
         <span class="tag">${h.mood}</span>
-        <span class="tag">${h.duration}</span>
       </div>
-      <div class="h-songs">${h.playlist} · ${h.songs.join(' · ')}</div>
+      <div class="h-songs">${h.playlist} · ${h.song} — ${h.artist}</div>
       <div class="h-card-actions">
         <button class="icon-btn" onclick="restoreResult(${i})">↩ View</button>
         <button class="icon-btn red" onclick="delHistory(${i})">✕ Remove</button>
@@ -875,19 +836,12 @@ function clearHistory() { history=[]; renderHistory(); updateCounts(); toast('Hi
 function restoreResult(i) {
   const h = history[i];
   currentResult = {...h};
-  const data = DB[h.genre]?.[h.mood];
-  if (!data) return;
-  document.getElementById('r-artist').textContent  = h.artist;
-  document.getElementById('r-meta').textContent    = `${h.genre} · ${h.mood} · ${h.duration}`;
+  document.getElementById('r-meta').textContent    = `Genre: ${h.genre}   ·   Mood: ${h.mood}   ·   Duration: ${h.duration}`;
   document.getElementById('r-pl-name').textContent = h.playlist;
+  document.getElementById('r-artist').textContent  = h.artist;
+  document.getElementById('r-song').textContent    = h.song;
   document.getElementById('r-sub').textContent     = `Viewed from history · ${h.date}`;
-  document.getElementById('r-fact').innerHTML      = `<strong>Fun Fact:</strong> ${data.fact}`;
-  document.getElementById('r-duration-note').innerHTML = `<strong>Why this pick:</strong> ${DURATION_NOTE[h.duration]}`;
-  const songsEl = document.getElementById('r-songs');
-  songsEl.innerHTML = '';
-  data.songs.forEach((s,i) => {
-    songsEl.innerHTML += `<div class="song-row"><span class="song-num">${i+1}</span><div style="flex:1"><div class="song-title">${s}</div><div class="song-artist">${data.artists[i]||h.artist}</div></div><span class="song-icon">♪</span></div>`;
-  });
+  document.getElementById('r-duration-note').innerHTML = `<strong>Reason:</strong>\n${h.reason}`;
   nav('result');
 }
 
@@ -906,9 +860,8 @@ function renderSaved() {
       <div class="tags">
         <span class="tag g">${s.genre}</span>
         <span class="tag">${s.mood}</span>
-        <span class="tag">${s.duration}</span>
       </div>
-      <div class="h-songs">${s.playlist} · ${s.songs.join(' · ')}</div>
+      <div class="h-songs">${s.playlist} · ${s.song} — ${s.artist}</div>
       <div class="h-card-actions">
         <button class="icon-btn red" onclick="delSaved(${i})">✕ Remove</button>
       </div>
