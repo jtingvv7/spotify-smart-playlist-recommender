@@ -353,10 +353,11 @@ main{flex:1;padding:32px;overflow-y:auto;}
   <div class="sidebar-label">Menu</div>
   <button class="sidebar-btn active" id="sb-home"      onclick="nav('home')"><span class="icon">🏠</span> Home</button>
   <button class="sidebar-btn"        id="sb-recommend" onclick="nav('recommend')"><span class="icon">🎵</span> Recommend</button>
+  <button class="sidebar-btn"        id="sb-genres"    onclick="nav('genres')"><span class="icon">🎼</span> Genres</button>
+  <button class="sidebar-btn"        id="sb-moods"     onclick="nav('moods')"><span class="icon">🙂</span> Moods</button>
   <button class="sidebar-btn"        id="sb-about"     onclick="nav('about')"><span class="icon">ℹ️</span> About</button>
   <div class="sidebar-divider"></div>
   <div class="sidebar-label">Library</div>
-  <button class="sidebar-btn" id="sb-saved"    onclick="nav('saved')"><span class="icon">❤️</span> Saved</button>
   <button class="sidebar-btn" id="sb-history"  onclick="nav('history')"><span class="icon">🕐</span> History</button>
   <button class="sidebar-btn" id="sb-playlist" onclick="nav('playlist')"><span class="icon">📋</span> Playlist</button>
 </aside>
@@ -443,10 +444,15 @@ main{flex:1;padding:32px;overflow-y:auto;}
       <div class="hc-title">New Recommendation</div>
       <div class="hc-sub">Answer 3 quick questions</div>
     </div>
-    <div class="home-card" onclick="nav('saved')">
-      <div class="hc-icon">❤️</div>
-      <div class="hc-title">Saved Playlists</div>
-      <div class="hc-sub" id="home-saved-count">0 saved</div>
+    <div class="home-card" onclick="nav('genres')">
+      <div class="hc-icon">🎼</div>
+      <div class="hc-title">View Genres</div>
+      <div class="hc-sub">5 supported music styles</div>
+    </div>
+    <div class="home-card" onclick="nav('moods')">
+      <div class="hc-icon">🙂</div>
+      <div class="hc-title">View Moods</div>
+      <div class="hc-sub">4 moods to choose from</div>
     </div>
     <div class="home-card" onclick="nav('history')">
       <div class="hc-icon">🕐</div>
@@ -552,15 +558,6 @@ main{flex:1;padding:32px;overflow-y:auto;}
   </div>
 </div>
 
-<!-- ═══ SAVED ═══ -->
-<div class="screen" id="screen-saved">
-  <h1 class="page-title">Saved Playlists</h1>
-  <p class="page-sub">Your liked recommendations.</p>
-  <div class="cards-grid" id="saved-grid">
-    <div class="empty-state"><div class="big-icon">❤️</div><p>No saved playlists yet.</p></div>
-  </div>
-</div>
-
 <!-- ═══ HISTORY ═══ -->
 <div class="screen" id="screen-history">
   <h1 class="page-title">Recommendation History</h1>
@@ -582,6 +579,37 @@ main{flex:1;padding:32px;overflow-y:auto;}
   </div>
 </div>
 
+<!-- ═══ GENRES ═══ -->
+<div class="screen" id="screen-genres">
+  <h1 class="page-title">Available Genres</h1>
+  <p class="page-sub">The music styles supported by the recommender.</p>
+  <div class="about-card">
+    <ul class="bullet-list">
+      <li><strong>1. Pop</strong> — Catchy melodies and upbeat rhythms.</li>
+      <li><strong>2. Rock</strong> — Strong beats and electric guitars.</li>
+      <li><strong>3. Hip-Hop</strong> — Rhythmic music and rhyming speech.</li>
+      <li><strong>4. Jazz</strong> — Improvisation and swing rhythms.</li>
+      <li><strong>5. Classical</strong> — Orchestral and traditional compositions.</li>
+    </ul>
+  </div>
+  <button class="btn btn-ghost" onclick="nav('home')">← Home</button>
+</div>
+
+<!-- ═══ MOODS ═══ -->
+<div class="screen" id="screen-moods">
+  <h1 class="page-title">Available Moods</h1>
+  <p class="page-sub">Pick the mood that matches how you feel.</p>
+  <div class="about-card">
+    <ul class="bullet-list">
+      <li>1. Happy</li>
+      <li>2. Relaxed</li>
+      <li>3. Energetic</li>
+      <li>4. Sad</li>
+    </ul>
+  </div>
+  <button class="btn btn-ghost" onclick="nav('home')">← Home</button>
+</div>
+
 <!-- ═══ ABOUT ═══ -->
 <div class="screen" id="screen-about">
   <h1 class="page-title">About Spotify & Disruptive Innovation</h1>
@@ -598,12 +626,11 @@ main{flex:1;padding:32px;overflow-y:auto;}
     based on user preferences, genre, mood, and listening habits.</p>
   </div>
 
+  <button class="btn btn-ghost" onclick="nav('home')">← Home</button>
 </div>
 
 </main>
 </div>
-
-<div id="toast">Saved!</div>
 
 <script>
 // ── STATE ──────────────────────────────────────────────
@@ -612,7 +639,6 @@ let users       = {};
 let answers     = { genre:null, mood:null, duration:null };
 let currentResult = null;
 let history  = [];
-let saved    = [];
 let playlist = [];
 
 // ── RECOMMENDATION DATABASE (matches main.py exactly: paired artist/song tracks) ──
@@ -696,7 +722,7 @@ function onLogin() {
 }
 
 function logout() {
-  currentUser=null; history=[]; saved=[]; playlist=[];
+  currentUser=null; history=[]; playlist=[];
   answers={genre:null,mood:null,duration:null};
   document.getElementById('navUser').classList.add('hidden');
   document.getElementById('btnLogout').classList.add('hidden');
@@ -716,7 +742,6 @@ function nav(id) {
   document.querySelectorAll('.sidebar-btn').forEach(b=>b.classList.remove('active'));
   const sb = document.getElementById('sb-'+id);
   if (sb) sb.classList.add('active');
-  if (id==='saved')    renderSaved();
   if (id==='history')  renderHistory();
   if (id==='playlist') renderPlaylist();
   if (id==='recommend') resetSteps();
@@ -789,12 +814,6 @@ function generate() {
 }
 
 // ── SAVE / PLAYLIST ────────────────────────────────────
-function saveResult() {
-  if (!currentResult) return;
-  if (saved.find(s=>s.artist===currentResult.artist&&s.song===currentResult.song&&s.date===currentResult.date)) { toast('Already saved!'); return; }
-  saved.unshift({...currentResult});
-  toast('Saved to library ❤️'); updateCounts();
-}
 
 function addPlaylist() {
   if (!currentResult) return;
@@ -845,30 +864,6 @@ function restoreResult(i) {
   nav('result');
 }
 
-// ── RENDER SAVED ───────────────────────────────────────
-function renderSaved() {
-  const grid = document.getElementById('saved-grid');
-  if (!saved.length) {
-    grid.innerHTML = `<div class="empty-state"><div class="big-icon">❤️</div><p>No saved playlists yet.<br>Hit Save after a recommendation!</p></div>`; return;
-  }
-  grid.innerHTML = saved.map((s,i) => `
-    <div class="h-card">
-      <div class="h-card-top">
-        <div class="h-artist">${s.artist}</div>
-        <div class="h-date">${s.date}</div>
-      </div>
-      <div class="tags">
-        <span class="tag g">${s.genre}</span>
-        <span class="tag">${s.mood}</span>
-      </div>
-      <div class="h-songs">${s.playlist} · ${s.song} — ${s.artist}</div>
-      <div class="h-card-actions">
-        <button class="icon-btn red" onclick="delSaved(${i})">✕ Remove</button>
-      </div>
-    </div>`).join('');
-}
-
-function delSaved(i) { saved.splice(i,1); renderSaved(); updateCounts(); toast('Removed from saved'); }
 
 // ── RENDER PLAYLIST ────────────────────────────────────
 function renderPlaylist() {
@@ -905,7 +900,6 @@ function clearPl() { playlist=[]; renderPlaylist(); updateCounts(); toast('Playl
 
 // ── COUNTS ─────────────────────────────────────────────
 function updateCounts() {
-  document.getElementById('home-saved-count').textContent = saved.length + ' saved';
   document.getElementById('home-hist-count').textContent  = history.length + ' session' + (history.length!==1?'s':'');
   document.getElementById('home-pl-count').textContent    = playlist.length ? playlist.length + ' songs' : 'Build your list';
 }
