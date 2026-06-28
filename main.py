@@ -118,7 +118,7 @@ def recommend_playlist():
     print()
     duration = get_valid_choice("Enter duration (1-3):", ["1","2","3"])
 
-    # ── RECOMMENDATION DATABASE ──
+    # ── RECOMMENDATION DICTIONARY ──
     recommendations = {
         # ── Pop ──
         ("1","1"): {"playlist":"Today's Top Hits",    "artists":["Taylor Swift","Olivia Rodrigo","Sabrina Carpenter"],         "songs":["Cruel Summer","vampire","Espresso"]},
